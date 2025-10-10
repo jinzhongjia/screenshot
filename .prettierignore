@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.bun/
+
+# Build outputs
+dist/
+out/
+build/
+*.min.js
+*.min.css
+
+# Lock files
+bun.lockb
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+
+# Test screenshots
+*.webp
+*.png
+*.jpg
+*.jpeg
+
+# Documentation (none to ignore)

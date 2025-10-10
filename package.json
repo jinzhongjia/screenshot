@@ -1,0 +1,82 @@
+{
+  "name": "@screenshot/service",
+  "version": "2.0.0",
+  "description": "High-performance web screenshot service and library powered by Bun and Puppeteer",
+  "main": "./dist/index.js",
+  "module": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./src/index.ts",
+      "require": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./src/server/index.ts",
+      "require": "./dist/server/index.js"
+    }
+  },
+  "bin": {
+    "screenshot": "./src/cli/index.ts"
+  },
+  "files": [
+    "dist",
+    "src",
+    "public",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "bun --hot index.ts",
+    "start": "bun index.ts",
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun && bun build ./src/server/index.ts --outdir ./dist/server --target bun",
+    "build:lib": "tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist",
+    "build:binary": "bun build ./index.ts --compile --outfile screenshot-server",
+    "build:cli-binary": "bun build ./src/cli/index.ts --compile --outfile screenshot",
+    "clean": "rm -rf dist out .bun screenshot screenshot-server",
+    "cli": "bun ./src/cli/index.ts",
+    "test": "bun test",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "check": "bun run format:check && bun run lint",
+    "check:fix": "bun run format && bun run lint:fix",
+    "prepublishOnly": "bun run check && bun run build && bun run build:lib"
+  },
+  "type": "module",
+  "keywords": [
+    "screenshot",
+    "puppeteer",
+    "bun",
+    "api",
+    "webp",
+    "capture",
+    "webpage",
+    "headless"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^24.23.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@types/bun": "latest",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "typescript-eslint": "^8.46.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}
