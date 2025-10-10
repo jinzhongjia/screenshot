@@ -1,6 +1,6 @@
 # Screenshot Service
 
-高性能网页截图解决方案，基于 [Bun](https://bun.sh) 与 [Puppeteer](https://pptr.dev) 构建。项目提供 API 服务、TypeScript/JavaScript 库、命令行工具以及丰富示例，帮助你在自动化场景中快速捕获并处理网页截图。
+高性能网页截图解决方案，基于 [Bun](https://bun.sh) 与 [Puppeteer](https://pptr.dev) 构建。项目提供 API 服务、TypeScript/JavaScript 库以及丰富示例，帮助你在自动化场景中快速捕获并处理网页截图。
 
 > 默认文档为英文版，参见 [README.md](./README.md)。
 
@@ -12,8 +12,8 @@
 - 高级能力：元素选择器截图、裁剪区域、暗黑模式、地理位置模拟、表单填充、注入脚本/样式等
 - 可选缓存机制，加速重复截图
 - 自带健康检查接口与交互式演示页面
-- 友好的 CLI 工具，可本地运行或调用远程 API
 - 提供 Docker 镜像与 docker-compose 配置，便于部署
+- 丰富的 TypeScript 类型定义与示例
 
 ## 快速开始
 
@@ -47,7 +47,6 @@ bun run build:lib
 
 # 生成功能性二进制文件
 bun run build:binary
-bun run build:cli-binary
 ```
 
 ## 库使用示例
@@ -95,26 +94,6 @@ await service.close();
 ```
 
 更多完整示例可参考 `examples/` 目录，包括缓存、认证、PDF 生成、地理位置模拟等场景。
-
-## CLI 使用
-
-可直接使用 Bun 运行，或通过 `bun run build:cli-binary` 生成可执行文件：
-
-```bash
-# 查看帮助
-bun ./src/cli/index.ts --help
-
-# 本地截图
-screenshot https://example.com --width 1440 --height 900
-
-# 全页面 PNG 输出
-screenshot https://github.com --full-page --format png --output github.png
-
-# 调用远程 API
-screenshot https://example.com --use-api --api-url https://api.example.com/screenshot
-```
-
-常用参数包括 `--width`、`--height`、`--full-page`、`--format`、`--quality`、`--timeout`、`--output` 以及 API 相关选项。
 
 ## API 说明
 
@@ -213,10 +192,9 @@ bun test
 src/
 ├── core/            # 基础与增强截图引擎
 ├── server/          # API 服务实现
-├── cli/             # 命令行工具
 ├── types/           # TypeScript 类型定义
 └── index.ts         # 库入口
-examples/            # API、CLI 与高级功能示例
+examples/            # API 与高级功能示例
 public/              # 演示页面
 test/                # Bun 测试用例
 ```
