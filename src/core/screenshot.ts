@@ -22,6 +22,35 @@ export class ScreenshotService {
    * 截取网页截图
    */
   async capture(options: ScreenshotOptions): Promise<ScreenshotResult> {
+    // 最多重试一次，以处理浏览器连接问题
+    let retries = 1;
+    let lastError: unknown;
+    
+    while (retries >= 0) {
+      try {
+        return await this.captureInternal(options);
+      } catch (error) {
+        lastError = error;
+        // 如果是连接错误且还有重试次数，重置浏览器并重试
+        if (retries > 0 && error instanceof Error && 
+            (error.message.includes('Connection closed') || 
+             error.message.includes('Session closed'))) {
+          console.warn('Browser connection lost, attempting to reconnect...');
+          this.browser = null;
+          retries--;
+        } else {
+          break;
+        }
+      }
+    }
+    
+    return this.createErrorResult(lastError);
+  }
+
+  /**
+   * 内部截图实现
+   */
+  private async captureInternal(options: ScreenshotOptions): Promise<ScreenshotResult> {
     // 当前，该钩子没用，但保留以备将来扩展
     const cachedResult = await this.getCachedResult(options);
     if (cachedResult) {
@@ -99,7 +128,18 @@ export class ScreenshotService {
    * 钩子：创建浏览器页面
    */
   protected async createPage(browser: Browser, _options: ScreenshotOptions): Promise<Page> {
-    return browser.newPage();
+     try {
+       // 检查浏览器是否仍然连接
+       if (!browser.connected) {
+         throw new Error('Browser is not connected');
+       }
+       return await browser.newPage();
+     } catch (error) {
+       // 如果创建页面失败，尝试重置浏览器
+       console.error('Failed to create page, resetting browser:', error);
+       this.browser = null;
+       throw error;
+     }
   }
 
   /**
@@ -124,7 +164,12 @@ export class ScreenshotService {
    * 获取或创建浏览器实例
    */
   protected async getBrowser(): Promise<Browser> {
-    if (!this.browser) {
+     if (!this.browser || !this.browser.connected) {
+       // 如果浏览器未连接，清理旧实例
+       if (this.browser && !this.browser.connected) {
+         this.browser = null;
+       }
+       
       this.browser = await puppeteer.launch({
         headless: this.config.headless,
         args: this.config.args,
@@ -302,7 +347,16 @@ export class ScreenshotService {
    * 页面清理
    */
   protected async cleanupPage(page: Page): Promise<void> {
-    await page.close().catch(console.error);
+     try {
+       if (page && !page.isClosed()) {
+         await page.close();
+       }
+     } catch (error) {
+       // 忽略连接已关闭的错误
+       if (error instanceof Error && !error.message.includes('Connection closed')) {
+         console.error('Error closing page:', error);
+       }
+     }
   }
 }
 
