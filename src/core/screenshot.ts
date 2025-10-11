@@ -22,6 +22,7 @@ export class ScreenshotService {
    * 截取网页截图
    */
   async capture(options: ScreenshotOptions): Promise<ScreenshotResult> {
+    // 当前，该钩子没用，但保留以备将来扩展
     const cachedResult = await this.getCachedResult(options);
     if (cachedResult) {
       return cachedResult;
@@ -138,17 +139,12 @@ export class ScreenshotService {
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected async configurePage(page: Page, options: ScreenshotOptions): Promise<void> {
-    const {
-      width = 1920,
-      height = 1080,
-      device,
-      customDevice,
-    } = options;
+    const { width = 1920, height = 1080, device, customDevice } = options;
 
     if (device || customDevice) {
       const devicePreset = customDevice || (device ? getDevice(device) : undefined);
       if (devicePreset) {
-        await page.setUserAgent(devicePreset.userAgent);
+        await page.setUserAgent({ userAgent: devicePreset.userAgent });
         await page.setViewport(devicePreset.viewport);
       } else if (device) {
         await page.setViewport({ width, height });
@@ -174,11 +170,7 @@ export class ScreenshotService {
    * 执行截图
    */
   protected async captureScreenshot(page: Page, options: ScreenshotOptions): Promise<Buffer> {
-    const {
-      type = 'webp',
-      quality = 90,
-      fullPage = false,
-    } = options;
+    const { type = 'webp', quality = 90, fullPage = false } = options;
 
     const screenshotOptions: any = {
       type,
