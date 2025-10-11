@@ -25,12 +25,10 @@
     "LICENSE"
   ],
   "scripts": {
-    "dev": "bun --hot index.ts",
-    "start": "bun index.ts",
-    "build": "bun build ./src/index.ts --outdir ./dist --target bun && bun build ./src/server/index.ts --outdir ./dist/server --target bun",
+    "dev": "bun --hot ./src/server/index.ts",
     "build:lib": "tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist",
-    "build:binary": "bun build ./index.ts --compile --outfile screenshot-server",
-    "clean": "rm -rf dist out .bun screenshot screenshot-server",
+    "build:binary": "bun build ./src/server/index.ts --compile --outfile dist/screenshot-server",
+    "clean": "rm -rf dist out .bun",
     "test": "bun test",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
