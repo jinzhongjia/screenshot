@@ -100,7 +100,7 @@ await service.close();
 ### 接口
 
 - `GET /health`：返回 `{ status: 'healthy' | 'unhealthy', timestamp }`
-- `POST /screenshot`：接受 JSON 请求体，支持 `format` 参数
+- `POST /screenshot`：接受 JSON 请求体，并支持可选查询参数 `format`
 
 ### 请求体示例
 
@@ -201,7 +201,7 @@ test/                # Bun 测试用例
 
 ## 参与贡献
 
-欢迎贡献！请阅读 [CONTRIBUTING.md](./CONTRIBUTING.md) 了解项目规范、代码风格与开发流程。
+欢迎贡献！请阅读 `CONTRIBUTING.md` 了解项目规范、代码风格与开发流程。
 
 ## 许可证
 

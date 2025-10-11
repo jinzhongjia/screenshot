@@ -112,4 +112,97 @@ Refer to `examples/` for full scripts covering caching, authentication, PDF gene
 
 ### Endpoints
 
-- `
+- `GET /health`: returns `{ status: 'healthy' | 'unhealthy', timestamp }`
+- `POST /screenshot`: accepts a JSON payload and supports the optional `format` query parameter
+
+### Request Payload Example
+
+```jsonc
+{
+  "url": "https://example.com",
+  "width": 1280,
+  "height": 720,
+  "fullPage": false,
+  "type": "webp",
+  "device": "iPhone 12",
+  "actions": {
+    "waitForSelector": "#hero",
+    "hideElements": [".ads"]
+  },
+  "format": "json"
+}
+```
+
+### Response Formats
+
+- `format=json`: returns metadata, title, description, and a Base64-encoded screenshot payload
+- `format=image`: streams the binary image with the appropriate `Content-Type`
+
+Request example:
+
+```bash
+curl -X POST http://localhost:3000/screenshot \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "url": "https://example.com",
+        "fullPage": true,
+        "format": "json"
+      }'
+```
+
+## Configuration
+
+Control runtime behavior via environment variables:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `PORT` | `3000` | HTTP port |
+| `HOST` | `localhost` | Bind address |
+| `CORS` | `true` | Enables CORS headers |
+| `ENABLE_DEMO` | `true` | Serves the interactive demo UI |
+| `HEADLESS` | `true` | Launches the browser in headless mode |
+| `TIMEOUT` | `30000` | Default page load timeout (ms) |
+| `PUPPETEER_EXECUTABLE_PATH` | auto-detect | Custom Chromium path (Docker default `/usr/bin/chromium`) |
+
+When bootstrapping via `ApiServer` or `createScreenshotService`, you can pass additional browser settings through `ServerConfig.browser`.
+
+## Docker & Deployment
+
+Build and run with Docker:
+
+```bash
+docker build -t screenshot-service .
+docker run -p 3000:3000 screenshot-service
+```
+
+Or use docker-compose:
+
+```bash
+docker compose up --build
+```
+
+The provided `Dockerfile` and `docker-compose.yml` include dependency installation and health checks.
+
+## Quality & Testing
+
+```bash
+# Format check
+bun run format:check
+
+# ESLint
+bun run lint
+
+# Combined checks
+bun run check
+
+# Test suites
+bun test
+```
+
+## Contributing
+
+Read `CONTRIBUTING.md` for guidelines on project standards, workflows, and code style.
+
+## License
+
+MIT License © Project contributors
