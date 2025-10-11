@@ -1,3 +1,5 @@
+import type { Browser } from 'puppeteer';
+
 /**
  * 截图服务的类型定义
  */
@@ -145,6 +147,8 @@ export interface ScreenshotOptions {
   cacheKey?: string;
   /** 缓存TTL（秒） */
   cacheTTL?: number;
+  /** 请求级浏览器配置，会与服务默认配置合并 */
+  browser?: BrowserConfig;
 }
 
 /**
@@ -212,6 +216,35 @@ export interface BrowserConfig {
   executablePath?: string;
   /** 默认超时时间 */
   defaultTimeout?: number;
+  /** 获取浏览器的等待超时时间（毫秒） */
+  acquireTimeout?: number;
+  /** 自定义池标识，可用于与其他配置共享资源 */
+  poolKey?: string;
+  /** 单浏览器允许的最大并发页面数 */
+  maxPagesPerBrowser?: number;
+  /** 单配置池允许的最大浏览器实例数 */
+  maxBrowsersPerConfig?: number;
+  /** 空闲浏览器保活时长（毫秒） */
+  keepAliveMillis?: number;
+}
+
+export interface BrowserPoolConfig {
+  /** 所有池合计的最大浏览器数量 */
+  maxTotalBrowsers?: number;
+  /** 默认获取浏览器超时时间（毫秒） */
+  acquireTimeout?: number;
+  /** 浏览器空闲关闭时间（毫秒） */
+  keepAliveMillis?: number;
+}
+
+export interface BrowserPoolAcquireOptions {
+  config: BrowserConfig;
+  timeout?: number;
+}
+
+export interface BrowserPoolAcquireResult {
+  browser: Browser;
+  poolKey: string;
 }
 
 /**
@@ -230,4 +263,6 @@ export interface ServerConfig {
   enableDemo?: boolean;
   /** 浏览器配置 */
   browser?: BrowserConfig;
+  /** 浏览器池全局配置 */
+  pool?: BrowserPoolConfig;
 }

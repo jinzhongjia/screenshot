@@ -1,21 +1,36 @@
-import puppeteer, { type Browser, type Page } from 'puppeteer';
-import type { ScreenshotOptions, ScreenshotResult, BrowserConfig } from '../types';
+import type { Browser, Page } from 'puppeteer';
+import type {
+  ScreenshotOptions,
+  ScreenshotResult,
+  BrowserConfig,
+  BrowserPoolAcquireResult,
+  BrowserPoolAcquireOptions,
+  BrowserPoolConfig,
+} from '../types';
 import { getDevice } from './devices';
+import { BrowserPoolManager } from './browser-pool';
 
 /**
  * 截图服务核心类
  */
 export class ScreenshotService {
-  protected browser: Browser | null = null;
   protected config: BrowserConfig;
+  protected readonly poolManager: BrowserPoolManager;
+  private currentAcquire: BrowserPoolAcquireResult | null = null;
 
-  constructor(config: BrowserConfig = {}) {
+  constructor(
+    config: BrowserConfig = {},
+    poolManager?: BrowserPoolManager,
+    poolConfig?: BrowserPoolConfig
+  ) {
     this.config = {
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       defaultTimeout: 30000,
       ...config,
     };
+
+    this.poolManager = poolManager ?? BrowserPoolManager.getDefaultInstance(poolConfig);
   }
 
   /**
@@ -25,25 +40,27 @@ export class ScreenshotService {
     // 最多重试一次，以处理浏览器连接问题
     let retries = 1;
     let lastError: unknown;
-    
+
     while (retries >= 0) {
       try {
         return await this.captureInternal(options);
       } catch (error) {
         lastError = error;
         // 如果是连接错误且还有重试次数，重置浏览器并重试
-        if (retries > 0 && error instanceof Error && 
-            (error.message.includes('Connection closed') || 
-             error.message.includes('Session closed'))) {
+        if (
+          retries > 0 &&
+          error instanceof Error &&
+          (error.message.includes('Connection closed') || error.message.includes('Session closed'))
+        ) {
           console.warn('Browser connection lost, attempting to reconnect...');
-          this.browser = null;
+          await this.invalidateCurrentBrowser(error);
           retries--;
         } else {
           break;
         }
       }
     }
-    
+
     return this.createErrorResult(lastError);
   }
 
@@ -62,7 +79,7 @@ export class ScreenshotService {
     try {
       this.validateOptions(options);
 
-      const browser = await this.getBrowser();
+      const browser = await this.getBrowser(options);
       page = await this.createPage(browser, options);
 
       const timeout = this.getTimeout(options);
@@ -91,6 +108,7 @@ export class ScreenshotService {
       if (page) {
         await this.cleanupPage(page);
       }
+      await this.releaseBrowser();
     }
   }
 
@@ -98,10 +116,7 @@ export class ScreenshotService {
    * 关闭浏览器实例
    */
   async close(): Promise<void> {
-    if (this.browser) {
-      await this.browser.close();
-      this.browser = null;
-    }
+    await this.poolManager.drain();
   }
 
   /**
@@ -119,8 +134,7 @@ export class ScreenshotService {
   /**
    * 钩子：检查缓存
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async getCachedResult(_: ScreenshotOptions): Promise<ScreenshotResult | null> {
+  protected async getCachedResult(_options: ScreenshotOptions): Promise<ScreenshotResult | null> {
     return null;
   }
 
@@ -128,18 +142,18 @@ export class ScreenshotService {
    * 钩子：创建浏览器页面
    */
   protected async createPage(browser: Browser, _options: ScreenshotOptions): Promise<Page> {
-     try {
-       // 检查浏览器是否仍然连接
-       if (!browser.connected) {
-         throw new Error('Browser is not connected');
-       }
-       return await browser.newPage();
-     } catch (error) {
-       // 如果创建页面失败，尝试重置浏览器
-       console.error('Failed to create page, resetting browser:', error);
-       this.browser = null;
-       throw error;
-     }
+    try {
+      // 检查浏览器是否仍然连接
+      if (!browser.connected) {
+        throw new Error('Browser is not connected');
+      }
+      return await browser.newPage();
+    } catch (error) {
+      // 如果创建页面失败，尝试重置浏览器
+      console.error('Failed to create page, resetting browser:', error);
+      await this.invalidateCurrentBrowser(error);
+      throw error;
+    }
   }
 
   /**
@@ -163,26 +177,68 @@ export class ScreenshotService {
   /**
    * 获取或创建浏览器实例
    */
-  protected async getBrowser(): Promise<Browser> {
-     if (!this.browser || !this.browser.connected) {
-       // 如果浏览器未连接，清理旧实例
-       if (this.browser && !this.browser.connected) {
-         this.browser = null;
-       }
-       
-      this.browser = await puppeteer.launch({
-        headless: this.config.headless,
-        args: this.config.args,
-        executablePath: this.config.executablePath,
-      });
+  protected async getBrowser(options?: ScreenshotOptions): Promise<Browser> {
+    if (this.currentAcquire) {
+      return this.currentAcquire.browser;
     }
-    return this.browser;
+
+    const acquireOptions: BrowserPoolAcquireOptions = {
+      config: this.buildBrowserConfig(options),
+    };
+
+    if (
+      this.config.acquireTimeout &&
+      (acquireOptions.timeout === undefined || acquireOptions.timeout === null)
+    ) {
+      acquireOptions.timeout = this.config.acquireTimeout;
+    }
+
+    this.currentAcquire = await this.poolManager.acquire(acquireOptions);
+
+    return this.currentAcquire.browser;
+  }
+
+  private async releaseBrowser(): Promise<void> {
+    if (!this.currentAcquire) {
+      return;
+    }
+
+    await this.poolManager.release(this.currentAcquire.poolKey, this.currentAcquire.browser);
+    this.currentAcquire = null;
+  }
+
+  private async invalidateCurrentBrowser(reason?: unknown): Promise<void> {
+    if (!this.currentAcquire) {
+      return;
+    }
+
+    await this.poolManager.invalidate(
+      this.currentAcquire.poolKey,
+      this.currentAcquire.browser,
+      reason
+    );
+    this.currentAcquire = null;
+  }
+
+  private buildBrowserConfig(options?: ScreenshotOptions): BrowserConfig {
+    if (!options?.browser) {
+      return this.config;
+    }
+
+    const mergedArgs = Array.from(
+      new Set([...(this.config.args ?? []), ...(options.browser.args ?? [])])
+    );
+
+    return {
+      ...this.config,
+      ...options.browser,
+      args: mergedArgs,
+    };
   }
 
   /**
    * 设置页面环境（可被子类扩展）
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected async configurePage(page: Page, options: ScreenshotOptions): Promise<void> {
     const { width = 1920, height = 1080, device, customDevice } = options;
 
@@ -202,14 +258,16 @@ export class ScreenshotService {
   /**
    * 导航前钩子
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async beforeNavigate(_page: Page, _options: ScreenshotOptions): Promise<void> {}
+  protected async beforeNavigate(_page: Page, _options: ScreenshotOptions): Promise<void> {
+    return;
+  }
 
   /**
    * 导航后钩子
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async afterNavigate(_page: Page, _options: ScreenshotOptions): Promise<void> {}
+  protected async afterNavigate(_page: Page, _options: ScreenshotOptions): Promise<void> {
+    return;
+  }
 
   /**
    * 执行截图
@@ -279,11 +337,12 @@ export class ScreenshotService {
   /**
    * 缓存结果钩子
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected async storeResultInCache(
     _options: ScreenshotOptions,
     _result: ScreenshotResult
-  ): Promise<void> {}
+  ): Promise<void> {
+    return;
+  }
 
   /**
    * 生成成功结果
@@ -347,16 +406,16 @@ export class ScreenshotService {
    * 页面清理
    */
   protected async cleanupPage(page: Page): Promise<void> {
-     try {
-       if (page && !page.isClosed()) {
-         await page.close();
-       }
-     } catch (error) {
-       // 忽略连接已关闭的错误
-       if (error instanceof Error && !error.message.includes('Connection closed')) {
-         console.error('Error closing page:', error);
-       }
-     }
+    try {
+      if (page && !page.isClosed()) {
+        await page.close();
+      }
+    } catch (error) {
+      // 忽略连接已关闭的错误
+      if (error instanceof Error && !error.message.includes('Connection closed')) {
+        console.error('Error closing page:', error);
+      }
+    }
   }
 }
 

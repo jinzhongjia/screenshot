@@ -113,9 +113,7 @@ describe('Device Presets', () => {
     });
 
     test('mobile devices should have touch enabled', () => {
-      const mobileDevices = Object.values(DEVICE_PRESETS).filter(
-        (d) => d.viewport.isMobile
-      );
+      const mobileDevices = Object.values(DEVICE_PRESETS).filter((d) => d.viewport.isMobile);
 
       mobileDevices.forEach((device) => {
         expect(device.viewport.hasTouch).toBe(true);
@@ -142,9 +140,7 @@ describe('Device Presets', () => {
     });
 
     test('portrait devices should have height > width', () => {
-      const portraitDevices = Object.values(DEVICE_PRESETS).filter(
-        (d) => !d.viewport.isLandscape
-      );
+      const portraitDevices = Object.values(DEVICE_PRESETS).filter((d) => !d.viewport.isLandscape);
 
       portraitDevices.forEach((device) => {
         expect(device.viewport.height).toBeGreaterThan(device.viewport.width);
@@ -152,9 +148,7 @@ describe('Device Presets', () => {
     });
 
     test('landscape devices should have width > height', () => {
-      const landscapeDevices = Object.values(DEVICE_PRESETS).filter(
-        (d) => d.viewport.isLandscape
-      );
+      const landscapeDevices = Object.values(DEVICE_PRESETS).filter((d) => d.viewport.isLandscape);
 
       landscapeDevices.forEach((device) => {
         expect(device.viewport.width).toBeGreaterThan(device.viewport.height);
@@ -177,17 +171,13 @@ describe('Device Presets', () => {
 
   describe('Device Categories', () => {
     test('should have various iPhone models', () => {
-      const iPhones = Object.keys(DEVICE_PRESETS).filter((key) =>
-        key.startsWith('iPhone')
-      );
+      const iPhones = Object.keys(DEVICE_PRESETS).filter((key) => key.startsWith('iPhone'));
 
       expect(iPhones.length).toBeGreaterThan(10);
     });
 
     test('should have iPad models', () => {
-      const iPads = Object.keys(DEVICE_PRESETS).filter((key) =>
-        key.startsWith('iPad')
-      );
+      const iPads = Object.keys(DEVICE_PRESETS).filter((key) => key.startsWith('iPad'));
 
       expect(iPads.length).toBeGreaterThanOrEqual(3);
     });

@@ -1,6 +1,6 @@
 {
-  "name": "@screenshot/service",
-  "version": "2.0.0",
+  "name": "@jinzhongjia/screenshot",
+  "version": "0.0.1",
   "description": "High-performance web screenshot service and library powered by Bun and Puppeteer",
   "main": "./dist/index.js",
   "module": "./src/index.ts",
@@ -26,9 +26,10 @@
   ],
   "scripts": {
     "dev": "bun --hot ./src/server/index.ts",
-    "build:lib": "tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist",
+    "build": "bun build ./src/index.ts --outdir dist --target bun",
+    "build:lib": "tsc --project tsconfig.build.json",
     "build:binary": "bun build ./src/server/index.ts --compile --outfile dist/screenshot-server",
-    "clean": "rm -rf dist out .bun",
+    "clean": "bunx rimraf dist out .bun",
     "test": "bun test",
     "test:basic": "bun test test/screenshot.test.ts",
     "test:enhanced": "bun test test/screenshot-enhanced.test.ts",
@@ -42,7 +43,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "check": "bun run format:check && bun run lint",
     "check:fix": "bun run format && bun run lint:fix",
-    "prepublishOnly": "bun run check && bun run build && bun run build:lib"
+    "prepublishOnly": "bun run clean && bun run check && bun run build && bun run build:lib"
   },
   "type": "module",
   "keywords": [
@@ -74,6 +75,9 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "engines": {
     "bun": ">=1.0.0"

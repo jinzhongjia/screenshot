@@ -45,10 +45,6 @@ export class EnhancedScreenshotService extends ScreenshotService {
       ? Buffer.from(cached.result.screenshot)
       : undefined;
 
-    if (cachedScreenshot) {
-      console.log(`Cache hit for key: ${cacheKey.substring(0, 20)}...`);
-    }
-
     return {
       ...cached.result,
       screenshot: cachedScreenshot,
@@ -95,7 +91,10 @@ export class EnhancedScreenshotService extends ScreenshotService {
     }
   }
 
-  protected override async captureScreenshot(page: Page, options: ScreenshotOptions): Promise<Buffer> {
+  protected override async captureScreenshot(
+    page: Page,
+    options: ScreenshotOptions
+  ): Promise<Buffer> {
     if (options.type === 'pdf') {
       return this.generatePDF(page, options);
     }
@@ -166,7 +165,6 @@ export class EnhancedScreenshotService extends ScreenshotService {
 
   clearCache(): void {
     this.cache.clear();
-    console.log('Cache cleared');
   }
 
   override async close(): Promise<void> {
@@ -179,9 +177,9 @@ export class EnhancedScreenshotService extends ScreenshotService {
       await page.setExtraHTTPHeaders({
         ...auth.headers,
         ...(auth.basic && {
-          Authorization: `Basic ${Buffer.from(`${auth.basic.username}:${auth.basic.password}`).toString(
-            'base64'
-          )}`,
+          Authorization: `Basic ${Buffer.from(
+            `${auth.basic.username}:${auth.basic.password}`
+          ).toString('base64')}`,
         }),
         ...(auth.bearer && {
           Authorization: `Bearer ${auth.bearer}`,
@@ -196,7 +194,7 @@ export class EnhancedScreenshotService extends ScreenshotService {
 
       const context = page.browserContext();
       // 确保每个 cookie 都有 domain 值
-      const cookiesWithDomain = auth.cookies.map(cookie => ({
+      const cookiesWithDomain = auth.cookies.map((cookie) => ({
         ...cookie,
         domain: cookie.domain || defaultDomain,
       }));

@@ -127,9 +127,9 @@ Refer to `examples/` for full scripts covering caching, authentication, PDF gene
   "device": "iPhone 12",
   "actions": {
     "waitForSelector": "#hero",
-    "hideElements": [".ads"]
+    "hideElements": [".ads"],
   },
-  "format": "json"
+  "format": "json",
 }
 ```
 
@@ -154,17 +154,53 @@ curl -X POST http://localhost:3000/screenshot \
 
 Control runtime behavior via environment variables:
 
-| Variable | Default | Description |
-| --- | --- | --- |
-| `PORT` | `3000` | HTTP port |
-| `HOST` | `localhost` | Bind address |
-| `CORS` | `true` | Enables CORS headers |
-| `ENABLE_DEMO` | `true` | Serves the interactive demo UI |
-| `HEADLESS` | `true` | Launches the browser in headless mode |
-| `TIMEOUT` | `30000` | Default page load timeout (ms) |
-| `PUPPETEER_EXECUTABLE_PATH` | auto-detect | Custom Chromium path (Docker default `/usr/bin/chromium`) |
+| Variable                    | Default        | Description                                               |
+| --------------------------- | -------------- | --------------------------------------------------------- |
+| `PORT`                      | `3000`         | HTTP port                                                 |
+| `HOST`                      | `localhost`    | Bind address                                              |
+| `CORS`                      | `true`         | Enables CORS headers                                      |
+| `ENABLE_DEMO`               | `true`         | Serves the interactive demo UI                            |
+| `HEADLESS`                  | `true`         | Launches the browser in headless mode                     |
+| `TIMEOUT`                   | `30000`        | Default page load timeout (ms)                            |
+| `PUPPETEER_EXECUTABLE_PATH` | auto-detect    | Custom Chromium path (Docker default `/usr/bin/chromium`) |
+| `ACQUIRE_TIMEOUT`           | `0` (disabled) | Max wait time when borrowing a browser from the pool (ms) |
+| `KEEP_ALIVE`                | `0` (disabled) | Idle browser lifetime before automatic shutdown (ms)      |
+| `MAX_PAGES_PER_BROWSER`     | `0` (disabled) | Max concurrent pages per browser instance                 |
+| `MAX_BROWSERS_PER_CONFIG`   | `0` (disabled) | Max browsers for a single configuration key               |
+| `MAX_TOTAL_BROWSERS`        | `4`            | Global cap across all pools                               |
+| `POOL_ACQUIRE_TIMEOUT`      | `30000`        | Default wait time shared by all configs (ms)              |
+| `POOL_KEEP_ALIVE`           | `60000`        | Idle close timeout shared by all configs (ms)             |
 
 When bootstrapping via `ApiServer` or `createScreenshotService`, you can pass additional browser settings through `ServerConfig.browser`.
+
+### Browser Pooling
+
+The service reuses Chromium instances via a configurable pool:
+
+- `BrowserConfig.poolKey` lets you group requests that should share the same pool.
+- `maxPagesPerBrowser` and `maxBrowsersPerConfig` control per-config fan-out.
+- `BrowserConfig.keepAliveMillis` or the global `pool.keepAliveMillis` specify how long idle browsers stay alive.
+- Use `browser.acquireTimeout` or `pool.acquireTimeout` to bound how long a request waits when pools are saturated.
+
+Example:
+
+```ts
+const service = createScreenshotService({
+  args: ['--no-sandbox'],
+  poolKey: 'default',
+  maxPagesPerBrowser: 2,
+  keepAliveMillis: 15000,
+});
+
+await service.capture({
+  url: 'https://example.com',
+  browser: {
+    args: ['--disable-gpu'],
+    poolKey: 'gpu-disabled',
+    acquireTimeout: 5000,
+  },
+});
+```
 
 ## Docker & Deployment
 
@@ -206,3 +242,5 @@ Read `CONTRIBUTING.md` for guidelines on project standards, workflows, and code 
 ## License
 
 MIT License © Project contributors
+
+"Project repository: https://github.com/jinzhongjia/screenshot"

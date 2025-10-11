@@ -114,9 +114,9 @@ await service.close();
   "device": "iPhone 12",
   "actions": {
     "waitForSelector": "#hero",
-    "hideElements": [".ads"]
+    "hideElements": [".ads"],
   },
-  "format": "json"
+  "format": "json",
 }
 ```
 
@@ -141,17 +141,53 @@ curl -X POST http://localhost:3000/screenshot \
 
 通过环境变量调整服务行为：
 
-| 变量 | 默认值 | 说明 |
-| --- | --- | --- |
-| `PORT` | `3000` | HTTP 端口 |
-| `HOST` | `localhost` | 监听地址 |
-| `CORS` | `true` | 是否启用 CORS 头 |
-| `ENABLE_DEMO` | `true` | 是否提供演示页面 |
-| `HEADLESS` | `true` | 是否以无头模式启动浏览器 |
-| `TIMEOUT` | `30000` | 默认页面加载超时（毫秒） |
-| `PUPPETEER_EXECUTABLE_PATH` | 自动检测 | 自定义 Chromium 路径（Docker 默认 `/usr/bin/chromium`） |
+| 变量                        | 默认值      | 说明                                                    |
+| --------------------------- | ----------- | ------------------------------------------------------- |
+| `PORT`                      | `3000`      | HTTP 端口                                               |
+| `HOST`                      | `localhost` | 监听地址                                                |
+| `CORS`                      | `true`      | 是否启用 CORS 头                                        |
+| `ENABLE_DEMO`               | `true`      | 是否提供演示页面                                        |
+| `HEADLESS`                  | `true`      | 是否以无头模式启动浏览器                                |
+| `TIMEOUT`                   | `30000`     | 默认页面加载超时（毫秒）                                |
+| `PUPPETEER_EXECUTABLE_PATH` | 自动检测    | 自定义 Chromium 路径（Docker 默认 `/usr/bin/chromium`） |
+| `ACQUIRE_TIMEOUT`           | `0`（禁用） | 借用浏览器时的等待上限（毫秒）                          |
+| `KEEP_ALIVE`                | `0`（禁用） | 空闲浏览器多久后自动关闭（毫秒）                        |
+| `MAX_PAGES_PER_BROWSER`     | `0`（禁用） | 单个浏览器允许的并发行页面数                            |
+| `MAX_BROWSERS_PER_CONFIG`   | `0`（禁用） | 单套配置允许的浏览器实例数                              |
+| `MAX_TOTAL_BROWSERS`        | `4`         | 全局浏览器实例上限                                      |
+| `POOL_ACQUIRE_TIMEOUT`      | `30000`     | 全局借用等待时长（毫秒）                                |
+| `POOL_KEEP_ALIVE`           | `60000`     | 全局空闲关闭时长（毫秒）                                |
 
 若通过 `ApiServer` 或 `createScreenshotService` 启动，可在 `ServerConfig.browser` 中传递更多浏览器配置。
+
+### 浏览器连接池
+
+服务通过可配置的浏览器池复用 Chromium 实例：
+
+- 使用 `BrowserConfig.poolKey` 将不同配置划分至独立池。
+- `maxPagesPerBrowser`、`maxBrowsersPerConfig` 控制单池内的扩容策略。
+- `BrowserConfig.keepAliveMillis` 或 `pool.keepAliveMillis` 控制空闲浏览器的保活时间。
+- `browser.acquireTimeout` 与 `pool.acquireTimeout` 用于限制在池满时的等待时长。
+
+示例：
+
+```ts
+const service = createScreenshotService({
+  args: ['--no-sandbox'],
+  poolKey: 'default',
+  maxPagesPerBrowser: 2,
+  keepAliveMillis: 15000,
+});
+
+await service.capture({
+  url: 'https://example.com',
+  browser: {
+    args: ['--disable-gpu'],
+    poolKey: 'gpu-disabled',
+    acquireTimeout: 5000,
+  },
+});
+```
 
 ## Docker 与部署
 
@@ -206,3 +242,5 @@ test/                # Bun 测试用例
 ## 许可证
 
 MIT License © 项目贡献者
+
+"项目仓库：https://github.com/jinzhongjia/screenshot"

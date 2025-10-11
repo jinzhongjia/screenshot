@@ -1,6 +1,6 @@
 import { test, expect, describe, beforeAll, afterAll } from 'bun:test';
 import { createScreenshotService, ScreenshotService } from '../src';
-import type { ScreenshotResult } from '../src';
+import type { BrowserConfig, ScreenshotResult } from '../src';
 
 describe('ScreenshotService', () => {
   let service: ScreenshotService;
@@ -137,6 +137,34 @@ describe('Multiple Screenshots', () => {
     expect(results).toHaveLength(3);
     expect(results.every((r) => r.success)).toBe(true);
     expect(results.every((r) => r.screenshot instanceof Buffer)).toBe(true);
+  }, 60000);
+
+  test('should allocate separate pools for different browser args', async () => {
+    const configA: BrowserConfig = {
+      headless: true,
+      args: ['--no-sandbox'],
+      poolKey: 'config-a',
+    };
+
+    const configB: BrowserConfig = {
+      headless: true,
+      args: ['--no-sandbox', '--disable-gpu'],
+      poolKey: 'config-b',
+    };
+
+    const serviceA = createScreenshotService(configA);
+    const serviceB = createScreenshotService(configB);
+
+    const [resultA, resultB] = await Promise.all([
+      serviceA.capture({ url: 'https://example.com', width: 640, height: 480 }),
+      serviceB.capture({ url: 'https://example.com', width: 640, height: 480 }),
+    ]);
+
+    expect(resultA.success).toBe(true);
+    expect(resultB.success).toBe(true);
+
+    await serviceA.close();
+    await serviceB.close();
   }, 60000);
 });
 

@@ -18,7 +18,11 @@ export class ApiServer {
       ...config,
     };
 
-    this.screenshotService = new ScreenshotService(this.config.browser);
+    this.screenshotService = new ScreenshotService(
+      this.config.browser,
+      undefined,
+      this.config.pool
+    );
   }
 
   /**
@@ -153,7 +157,6 @@ export class ApiServer {
     );
   }
 
-
   /**
    * 启动服务器
    */
@@ -189,8 +192,8 @@ export class ApiServer {
       },
     });
 
-    console.log(`🚀 Server running at http://${host}:${port}`);
-    console.log(`📸 Screenshot API: http://${host}:${port}/screenshot`);
+    console.log(`Server running at http://${host}:${port}`);
+    console.log(`Screenshot API endpoint: http://${host}:${port}/screenshot`);
   }
 
   /**

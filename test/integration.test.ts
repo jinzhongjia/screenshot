@@ -46,11 +46,7 @@ describe('Integration Tests', () => {
     });
 
     test('should handle multiple sequential screenshots', async () => {
-      const urls = [
-        'https://example.com',
-        'https://example.org',
-        'https://example.net',
-      ];
+      const urls = ['https://example.com', 'https://example.org', 'https://example.net'];
 
       for (const url of urls) {
         const result = await service.capture({ url });
@@ -60,11 +56,7 @@ describe('Integration Tests', () => {
     }, 90000);
 
     test('should handle rapid sequential screenshots', async () => {
-      const urls = [
-        'https://example.com',
-        'https://example.org',
-        'https://example.net',
-      ];
+      const urls = ['https://example.com', 'https://example.org', 'https://example.net'];
 
       // 快速连续执行截图（不是真正的并行）
       // 这测试了服务能够快速处理多个请求
@@ -75,7 +67,7 @@ describe('Integration Tests', () => {
       }
 
       expect(results).toHaveLength(3);
-      results.forEach((result, index) => {
+      results.forEach((result, _index) => {
         expect(result.success).toBe(true);
         expect(result.screenshot).toBeInstanceOf(Buffer);
       });
@@ -83,8 +75,8 @@ describe('Integration Tests', () => {
 
     test('should capture with multiple options combined', async () => {
       // 添加小延迟避免与前一个测试的资源冲突
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const result = await service.capture({
         url: 'https://example.com',
         width: 1280,
@@ -108,8 +100,8 @@ describe('Integration Tests', () => {
 
     test('should handle device emulation with actions', async () => {
       // 添加小延迟避免与前一个测试的资源冲突
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const result = await service.capture({
         url: 'https://example.com',
         device: 'iPhone 12',
@@ -125,8 +117,8 @@ describe('Integration Tests', () => {
 
     test('should cache multiple requests', async () => {
       // 添加小延迟避免与前一个测试的资源冲突
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       const options = {
         url: 'https://example.com',
         cacheTTL: 60,
@@ -277,11 +269,7 @@ describe('Integration Tests', () => {
     test('should work with custom browser args', async () => {
       const service = createScreenshotService({
         headless: true,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-        ],
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       });
 
       const result = await service.capture({

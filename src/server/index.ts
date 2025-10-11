@@ -14,6 +14,15 @@ const config: ServerConfig = {
   browser: {
     headless: process.env.HEADLESS !== 'false',
     defaultTimeout: parseInt(process.env.TIMEOUT || '30000'),
+    acquireTimeout: parseInt(process.env.ACQUIRE_TIMEOUT || '0') || undefined,
+    keepAliveMillis: parseInt(process.env.KEEP_ALIVE || '0') || undefined,
+    maxPagesPerBrowser: parseInt(process.env.MAX_PAGES_PER_BROWSER || '0') || undefined,
+    maxBrowsersPerConfig: parseInt(process.env.MAX_BROWSERS_PER_CONFIG || '0') || undefined,
+  },
+  pool: {
+    maxTotalBrowsers: parseInt(process.env.MAX_TOTAL_BROWSERS || '0') || undefined,
+    acquireTimeout: parseInt(process.env.POOL_ACQUIRE_TIMEOUT || '0') || undefined,
+    keepAliveMillis: parseInt(process.env.POOL_KEEP_ALIVE || '0') || undefined,
   },
 };
 
@@ -31,13 +40,13 @@ async function start() {
 
 // 优雅关闭
 process.on('SIGINT', async () => {
-  console.log('\n🛑 Shutting down server...');
+  console.log('Shutting down server...');
   await server.stop();
   process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
-  console.log('\n🛑 Shutting down server...');
+  console.log('Shutting down server...');
   await server.stop();
   process.exit(0);
 });
