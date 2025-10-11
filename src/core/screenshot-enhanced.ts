@@ -85,7 +85,7 @@ export class EnhancedScreenshotService extends ScreenshotService {
 
   protected override async beforeNavigate(page: Page, options: ScreenshotOptions): Promise<void> {
     if (options.auth) {
-      await this.setupAuth(page, options.auth);
+      await this.setupAuth(page, options.auth, options.url);
     }
   }
 
@@ -174,7 +174,7 @@ export class EnhancedScreenshotService extends ScreenshotService {
     this.clearCache();
   }
 
-  private async setupAuth(page: Page, auth: AuthConfig): Promise<void> {
+  private async setupAuth(page: Page, auth: AuthConfig, url: string): Promise<void> {
     if (auth.headers || auth.basic || auth.bearer) {
       await page.setExtraHTTPHeaders({
         ...auth.headers,
@@ -190,7 +190,17 @@ export class EnhancedScreenshotService extends ScreenshotService {
     }
 
     if (auth.cookies && auth.cookies.length > 0) {
-      await page.setCookie(...auth.cookies);
+      // 从 URL 中提取 domain
+      const urlObj = new URL(url);
+      const defaultDomain = urlObj.hostname;
+
+      const context = page.browserContext();
+      // 确保每个 cookie 都有 domain 值
+      const cookiesWithDomain = auth.cookies.map(cookie => ({
+        ...cookie,
+        domain: cookie.domain || defaultDomain,
+      }));
+      await context.setCookie(...cookiesWithDomain);
     }
   }
 
