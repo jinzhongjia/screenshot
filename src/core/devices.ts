@@ -57,6 +57,123 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
       isLandscape: false,
     },
   },
+  'iPhone 13': {
+    name: 'iPhone 13',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 13 Pro': {
+    name: 'iPhone 13 Pro',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 13 Pro Max': {
+    name: 'iPhone 13 Pro Max',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 428,
+      height: 926,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 14': {
+    name: 'iPhone 14',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 14 Pro': {
+    name: 'iPhone 14 Pro',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 393,
+      height: 852,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 14 Pro Max': {
+    name: 'iPhone 14 Pro Max',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 430,
+      height: 932,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 15': {
+    name: 'iPhone 15',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 393,
+      height: 852,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 15 Pro': {
+    name: 'iPhone 15 Pro',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 393,
+      height: 852,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 15 Pro Max': {
+    name: 'iPhone 15 Pro Max',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 430,
+      height: 932,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
 
   // iPad 系列
   iPad: {
@@ -113,6 +230,45 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
       isLandscape: false,
     },
   },
+  'Pixel 6': {
+    name: 'Pixel 6',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 12; Pixel 6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36',
+    viewport: {
+      width: 412,
+      height: 915,
+      deviceScaleFactor: 2.625,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Pixel 7': {
+    name: 'Pixel 7',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 412,
+      height: 915,
+      deviceScaleFactor: 2.625,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S20': {
+    name: 'Samsung Galaxy S20',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 10; SM-G980F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+    viewport: {
+      width: 360,
+      height: 800,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
   'Samsung Galaxy S21': {
     name: 'Samsung Galaxy S21',
     userAgent:
@@ -121,6 +277,84 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
       width: 360,
       height: 800,
       deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S22': {
+    name: 'Samsung Galaxy S22',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 12; SM-S901B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Mobile Safari/537.36',
+    viewport: {
+      width: 360,
+      height: 800,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S23': {
+    name: 'Samsung Galaxy S23',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 13; SM-S911B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 360,
+      height: 800,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S23 Ultra': {
+    name: 'Samsung Galaxy S23 Ultra',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 360,
+      height: 800,
+      deviceScaleFactor: 3.5,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'OnePlus 9 Pro': {
+    name: 'OnePlus 9 Pro',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 11; LE2123) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+    viewport: {
+      width: 412,
+      height: 919,
+      deviceScaleFactor: 3.5,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Xiaomi Mi 11': {
+    name: 'Xiaomi Mi 11',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 11; M2011K2C) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+    viewport: {
+      width: 360,
+      height: 800,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy Tab S8': {
+    name: 'Samsung Galaxy Tab S8',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 12; SM-X706B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.88 Safari/537.36',
+    viewport: {
+      width: 800,
+      height: 1280,
+      deviceScaleFactor: 2,
       isMobile: true,
       hasTouch: true,
       isLandscape: false,
@@ -149,6 +383,58 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
       width: 2560,
       height: 1440,
       deviceScaleFactor: 2,
+      isMobile: false,
+      hasTouch: false,
+      isLandscape: true,
+    },
+  },
+  'MacBook Air': {
+    name: 'MacBook Air',
+    userAgent:
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    viewport: {
+      width: 1440,
+      height: 900,
+      deviceScaleFactor: 2,
+      isMobile: false,
+      hasTouch: false,
+      isLandscape: true,
+    },
+  },
+  'MacBook Pro 13': {
+    name: 'MacBook Pro 13',
+    userAgent:
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    viewport: {
+      width: 1440,
+      height: 900,
+      deviceScaleFactor: 2,
+      isMobile: false,
+      hasTouch: false,
+      isLandscape: true,
+    },
+  },
+  'MacBook Pro 16': {
+    name: 'MacBook Pro 16',
+    userAgent:
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    viewport: {
+      width: 1728,
+      height: 1117,
+      deviceScaleFactor: 2,
+      isMobile: false,
+      hasTouch: false,
+      isLandscape: true,
+    },
+  },
+  'Laptop 720p': {
+    name: 'Laptop 720p',
+    userAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    viewport: {
+      width: 1366,
+      height: 768,
+      deviceScaleFactor: 1,
       isMobile: false,
       hasTouch: false,
       isLandscape: true,
