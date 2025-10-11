@@ -91,7 +91,7 @@ export class ScreenshotService {
    * 钩子：检查缓存
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected async getCachedResult(options: ScreenshotOptions): Promise<ScreenshotResult | null> {
+  protected async getCachedResult(_: ScreenshotOptions): Promise<ScreenshotResult | null> {
     return null;
   }
 
