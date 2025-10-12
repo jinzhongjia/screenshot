@@ -1,5 +1,12 @@
 import { ScreenshotService } from '../core/screenshot';
-import type { ApiRequestBody, ApiJsonResponse, ServerConfig } from '../types';
+import { RouteRegistry } from '../core/server-router';
+import type {
+  ApiRequestBody,
+  ApiJsonResponse,
+  ApiRouteDefinition,
+  ApiServerOptions,
+  ServerConfig,
+} from '../types';
 
 /**
  * API 服务器
@@ -7,9 +14,10 @@ import type { ApiRequestBody, ApiJsonResponse, ServerConfig } from '../types';
 export class ApiServer {
   private screenshotService: ScreenshotService;
   private config: ServerConfig;
-  private server: any = null;
+  private server: ReturnType<typeof Bun.serve> | null = null;
+  private routes: RouteRegistry;
 
-  constructor(config: ServerConfig = {}) {
+  constructor(config: ApiServerOptions = {}) {
     this.config = {
       port: 3000,
       host: 'localhost',
@@ -23,6 +31,17 @@ export class ApiServer {
       undefined,
       this.config.pool
     );
+
+    const defaultRoutes: ApiRouteDefinition[] = [
+      { path: '/health', methods: 'GET', handler: (req) => this.handleHealth(req) },
+      {
+        path: '/screenshot',
+        methods: ['POST', 'OPTIONS'],
+        handler: (req) => this.handleScreenshot(req),
+      },
+    ];
+
+    this.routes = new RouteRegistry([...(config.routes ?? []), ...defaultRoutes]);
   }
 
   /**
@@ -139,7 +158,7 @@ export class ApiServer {
   /**
    * 处理健康检查
    */
-  private async handleHealth(): Promise<Response> {
+  private async handleHealth(_req: Request): Promise<Response> {
     const isReady = await this.screenshotService.isReady();
 
     return new Response(
@@ -169,31 +188,45 @@ export class ApiServer {
       fetch: async (req) => {
         const url = new URL(req.url);
 
-        // 路由处理
-        switch (url.pathname) {
-          case '/health':
-            return await this.handleHealth();
+        const handled = await this.routes.handle(req, {
+          config: this.config,
+          screenshotService: this.screenshotService,
+        });
 
-          case '/screenshot':
-            return await this.handleScreenshot(req);
-
-          case '/':
-            const demoFile = Bun.file('public/demo.html');
-            if (await demoFile.exists()) {
-              return new Response(demoFile, {
-                headers: { 'Content-Type': 'text/html; charset=utf-8' },
-              });
-            }
-            return new Response('Demo page not found', { status: 404 });
-
-          default:
-            return new Response('Not Found', { status: 404 });
+        if (handled) {
+          return handled;
         }
+
+        if (url.pathname === '/') {
+          return this.handleDemo(req);
+        }
+
+        if (url.pathname === '/screenshot') {
+          return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+            status: 405,
+            headers: {
+              'Content-Type': 'application/json',
+              ...this.getCorsHeaders(),
+            },
+          });
+        }
+
+        return new Response('Not Found', { status: 404 });
       },
     });
 
     console.log(`Server running at http://${host}:${port}`);
     console.log(`Screenshot API endpoint: http://${host}:${port}/screenshot`);
+  }
+
+  private async handleDemo(_req: Request): Promise<Response> {
+    const demoFile = Bun.file('public/demo.html');
+    if (await demoFile.exists()) {
+      return new Response(demoFile, {
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      });
+    }
+    return new Response('Demo page not found', { status: 404 });
   }
 
   /**

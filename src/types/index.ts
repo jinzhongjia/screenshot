@@ -237,14 +237,32 @@ export interface BrowserPoolConfig {
   keepAliveMillis?: number;
 }
 
-export interface BrowserPoolAcquireOptions {
-  config: BrowserConfig;
-  timeout?: number;
-}
-
 export interface BrowserPoolAcquireResult {
   browser: Browser;
   poolKey: string;
+}
+
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'HEAD';
+
+export interface RouteHandlerContext {
+  config: ServerConfig;
+  screenshotService: import('../core/screenshot').ScreenshotService;
+}
+
+export type RouteHandler = (
+  request: Request,
+  context: RouteHandlerContext
+) => Promise<Response> | Response;
+
+export interface ApiRouteDefinition {
+  path: string;
+  methods?: HttpMethod | HttpMethod[];
+  handler: RouteHandler;
+}
+
+export interface ApiServerOptions extends ServerConfig {
+  routes?: ApiRouteDefinition[];
+  screenshotService?: import('../core/screenshot').ScreenshotService;
 }
 
 /**
