@@ -237,6 +237,11 @@ export interface BrowserPoolConfig {
   keepAliveMillis?: number;
 }
 
+export interface BrowserPoolAcquireOptions {
+  config: BrowserConfig;
+  timeout?: number;
+}
+
 export interface BrowserPoolAcquireResult {
   browser: Browser;
   poolKey: string;
