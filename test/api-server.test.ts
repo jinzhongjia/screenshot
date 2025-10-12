@@ -196,9 +196,7 @@ describe('ApiServer', () => {
         method: 'GET',
       });
 
-      expect(response.status).toBe(405);
-      const data = await response.json();
-      expect(data.error).toContain('Method not allowed');
+      expect(response.status).toBe(404);
     });
 
     test('should reject PUT requests', async () => {
@@ -212,7 +210,7 @@ describe('ApiServer', () => {
         }),
       });
 
-      expect(response.status).toBe(405);
+      expect(response.status).toBe(404);
     });
   });
 
@@ -253,6 +251,54 @@ describe('ApiServer', () => {
     test('should return 404 for unknown routes', async () => {
       const response = await fetch(`${baseUrl}/unknown-route`);
       expect(response.status).toBe(404);
+    });
+  });
+
+  describe('Custom Routes', () => {
+    const customPort = 3005;
+    const customBaseUrl = `http://localhost:${customPort}`;
+    let customServer: ApiServer;
+
+    beforeAll(async () => {
+      customServer = new ApiServer({
+        port: customPort,
+        routes: [
+          {
+            path: '/custom',
+            methods: 'GET',
+            handler: async (_req, { config }) => {
+              return new Response(
+                JSON.stringify({
+                  message: 'custom route',
+                  port: config.port,
+                }),
+                {
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
+            },
+          },
+        ],
+      });
+
+      await customServer.start();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    });
+
+    afterAll(async () => {
+      await customServer.stop();
+    });
+
+    test('should handle user-defined routes', async () => {
+      const response = await fetch(`${customBaseUrl}/custom`);
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain('application/json');
+
+      const data = (await response.json()) as { message: string; port?: number };
+      expect(data.message).toBe('custom route');
+      expect(data.port).toBe(customPort);
     });
   });
 

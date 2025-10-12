@@ -12,10 +12,10 @@ import type {
  * API 服务器
  */
 export class ApiServer {
-  private screenshotService: ScreenshotService;
-  private config: ServerConfig;
+  protected readonly screenshotService: ScreenshotService;
+  protected readonly config: ServerConfig;
   private server: ReturnType<typeof Bun.serve> | null = null;
-  private routes: RouteRegistry;
+  protected readonly routes: RouteRegistry;
 
   constructor(config: ApiServerOptions = {}) {
     this.config = {
@@ -41,7 +41,8 @@ export class ApiServer {
       },
     ];
 
-    this.routes = new RouteRegistry([...(config.routes ?? []), ...defaultRoutes]);
+    const userRoutes = config.routes ?? [];
+    this.routes = new RouteRegistry([...defaultRoutes, ...userRoutes]);
   }
 
   /**
@@ -186,8 +187,6 @@ export class ApiServer {
       port,
       hostname: host,
       fetch: async (req) => {
-        const url = new URL(req.url);
-
         const handled = await this.routes.handle(req, {
           config: this.config,
           screenshotService: this.screenshotService,
@@ -197,36 +196,12 @@ export class ApiServer {
           return handled;
         }
 
-        if (url.pathname === '/') {
-          return this.handleDemo(req);
-        }
-
-        if (url.pathname === '/screenshot') {
-          return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-            status: 405,
-            headers: {
-              'Content-Type': 'application/json',
-              ...this.getCorsHeaders(),
-            },
-          });
-        }
-
         return new Response('Not Found', { status: 404 });
       },
     });
 
     console.log(`Server running at http://${host}:${port}`);
     console.log(`Screenshot API endpoint: http://${host}:${port}/screenshot`);
-  }
-
-  private async handleDemo(_req: Request): Promise<Response> {
-    const demoFile = Bun.file('public/demo.html');
-    if (await demoFile.exists()) {
-      return new Response(demoFile, {
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-      });
-    }
-    return new Response('Demo page not found', { status: 404 });
   }
 
   /**
