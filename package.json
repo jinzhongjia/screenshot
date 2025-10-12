@@ -1,6 +1,6 @@
 {
   "name": "@jinzhongjia/screenshot",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "High-performance web screenshot service and library powered by Bun and Puppeteer",
   "main": "./dist/index.js",
   "module": "./src/index.ts",
