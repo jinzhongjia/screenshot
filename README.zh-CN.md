@@ -160,6 +160,37 @@ curl -X POST http://localhost:3000/screenshot \
 
 若通过 `ApiServer` 或 `createScreenshotService` 启动，可在 `ServerConfig.browser` 中传递更多浏览器配置。
 
+### API 服务器使用
+
+内置的 `ApiServer` 默认仅暴露两个接口：
+
+- `GET /health`：健康检查
+- `POST /screenshot`：截图接口（支持 `OPTIONS` 以处理 CORS）
+
+你可以通过传入自定义路由扩展功能，每个路由都能访问服务器配置和截图服务实例。
+
+```ts
+import { ApiServer } from '@jinzhongjia/screenshot';
+
+const server = new ApiServer({
+  port: 8080,
+  routes: [
+    {
+      path: '/version',
+      methods: 'GET',
+      handler: async (_req, { config }) =>
+        new Response(JSON.stringify({ version: '0.0.2', port: config.port }), {
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    },
+  ],
+});
+
+await server.start();
+```
+
+这样可以在保持核心 API 简洁的同时，方便将截图服务挂载到其他服务框架上。
+
 ### 浏览器连接池
 
 服务通过可配置的浏览器池复用 Chromium 实例：

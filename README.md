@@ -173,6 +173,37 @@ Control runtime behavior via environment variables:
 
 When bootstrapping via `ApiServer` or `createScreenshotService`, you can pass additional browser settings through `ServerConfig.browser`.
 
+### API Server Usage
+
+The built-in `ApiServer` exposes only two endpoints by default:
+
+- `GET /health`: readiness probe
+- `POST /screenshot`: screenshot API (supports `OPTIONS` for CORS)
+
+You can extend the server by providing custom routes. Each route receives the request along with the server config and an instance of `ScreenshotService`.
+
+```ts
+import { ApiServer } from '@jinzhongjia/screenshot';
+
+const server = new ApiServer({
+  port: 8080,
+  routes: [
+    {
+      path: '/version',
+      methods: 'GET',
+      handler: async (_req, { config }) =>
+        new Response(JSON.stringify({ version: '0.0.2', port: config.port }), {
+          headers: { 'Content-Type': 'application/json' },
+        }),
+    },
+  ],
+});
+
+await server.start();
+```
+
+This makes it easy to plug the screenshot service into other frameworks or servers while keeping the core API minimal.
+
 ### Browser Pooling
 
 The service reuses Chromium instances via a configurable pool:
