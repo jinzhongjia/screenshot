@@ -99,6 +99,161 @@
       padding-right: 36px;
     }
 
+    /* Custom Device Selector Styles */
+    .custom-select-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+      background: #fcfcfc;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .custom-select-trigger:hover {
+      border-color: #cbd5e0;
+      background: white;
+    }
+
+    .custom-select-trigger.active {
+      border-color: #4a5568;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.1);
+    }
+
+    .custom-select-arrow {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+
+    .custom-select-trigger.active .custom-select-arrow {
+      transform: rotate(180deg);
+    }
+
+    .custom-select-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.3s ease, opacity 0.2s ease;
+    }
+
+    .custom-select-dropdown.active {
+      max-height: 400px;
+      opacity: 1;
+      overflow-y: auto;
+    }
+
+    .custom-select-search {
+      position: sticky;
+      top: 0;
+      background: white;
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      z-index: 1;
+    }
+
+    .custom-select-search input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .custom-select-search input:focus {
+      outline: none;
+      border-color: #4a5568;
+      box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
+    }
+
+    .custom-select-options {
+      padding: 8px 0;
+    }
+
+    .custom-select-group {
+      margin-bottom: 4px;
+    }
+
+    .custom-select-group-label {
+      padding: 8px 16px 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .custom-select-option {
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background-color 0.15s;
+      font-size: 14px;
+      color: #2c3e50;
+    }
+
+    .custom-select-option:hover {
+      background-color: #f7fafc;
+    }
+
+    .custom-select-option.selected {
+      background-color: #edf2f7;
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    .custom-select-option.hidden {
+      display: none;
+    }
+
+    .custom-select-no-results {
+      padding: 16px;
+      text-align: center;
+      color: #718096;
+      font-size: 14px;
+    }
+
+    /* Custom scrollbar for dropdown */
+    .custom-select-dropdown::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .custom-select-dropdown::-webkit-scrollbar-track {
+      background: #f7fafc;
+      border-radius: 4px;
+    }
+
+    .custom-select-dropdown::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 4px;
+    }
+
+    .custom-select-dropdown::-webkit-scrollbar-thumb:hover {
+      background: #a0aec0;
+    }
+
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -255,6 +410,48 @@
       text-decoration: underline;
     }
 
+    /* Language Toggle Styles */
+    .language-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 8px;
+      background: white;
+      border-radius: 8px;
+      padding: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .language-toggle button {
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #718096;
+      width: auto;
+    }
+
+    .language-toggle button:hover {
+      background: #f7fafc;
+      color: #2c3e50;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .language-toggle button.active {
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .container {
+      position: relative;
+    }
+
     .examples-label {
       font-size: 13px;
       color: #718096;
@@ -299,54 +496,54 @@
 </head>
 <body>
   <div class="container">
+    <div class="language-toggle">
+      <button id="langEn" data-lang="en">English</button>
+      <button id="langZh" data-lang="zh" class="active">中文</button>
+    </div>
+
     <div class="header">
-      <h1>网页截图服务</h1>
-      <p>高性能的网页截图 API，基于 Bun 和 Puppeteer 构建</p>
+      <h1 data-i18n="title">网页截图服务</h1>
+      <p data-i18n="subtitle">高性能的网页截图 API，基于 Bun 和 Puppeteer 构建</p>
     </div>
 
     <div class="card">
       <form id="screenshotForm">
         <div class="form-group">
-          <label for="url">网址</label>
+          <label for="url" data-i18n="label.url">网址</label>
           <input
             type="text"
             id="url"
             name="url"
             placeholder="https://example.com"
+            data-i18n-placeholder="placeholder.url"
             required
           >
         </div>
 
         <div class="form-group">
-          <label for="device">设备模拟</label>
-          <select id="device" name="device">
-            <option value="">自定义尺寸</option>
-            <optgroup label="iPhone">
-              <option value="iPhone 12">iPhone 12 (390×844)</option>
-              <option value="iPhone 12 Pro">iPhone 12 Pro (390×844)</option>
-              <option value="iPhone 12 Pro Max">iPhone 12 Pro Max (428×926)</option>
-              <option value="iPhone SE">iPhone SE (375×667)</option>
-            </optgroup>
-            <optgroup label="iPad">
-              <option value="iPad">iPad (768×1024)</option>
-              <option value="iPad Pro">iPad Pro (1024×1366)</option>
-              <option value="iPad Mini">iPad Mini (768×1024)</option>
-            </optgroup>
-            <optgroup label="Android">
-              <option value="Pixel 5">Pixel 5 (393×851)</option>
-              <option value="Samsung Galaxy S21">Galaxy S21 (360×800)</option>
-            </optgroup>
-            <optgroup label="桌面">
-              <option value="Desktop 1080p">桌面 1080p (1920×1080)</option>
-              <option value="Desktop 1440p">桌面 1440p (2560×1440)</option>
-              <option value="Desktop 4K">桌面 4K (3840×2160)</option>
-            </optgroup>
-          </select>
+          <label for="device" data-i18n="label.device">设备模拟</label>
+          <div class="custom-select-wrapper" id="deviceSelectWrapper">
+            <div class="custom-select-trigger" id="deviceSelectTrigger">
+              <span id="deviceSelectText">加载设备列表中...</span>
+              <svg class="custom-select-arrow" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L7 7L13 1" stroke="#4a5568" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="custom-select-dropdown" id="deviceSelectDropdown">
+              <div class="custom-select-search">
+                <input type="text" id="deviceSearchInput" placeholder="搜索设备..." data-i18n-placeholder="placeholder.search" autocomplete="off">
+              </div>
+              <div class="custom-select-options" id="deviceSelectOptions">
+                <!-- Options will be populated dynamically -->
+              </div>
+            </div>
+          </div>
+          <input type="hidden" id="device" name="device" value="">
         </div>
 
         <div class="row" id="customSizeRow">
           <div class="form-group">
-            <label for="width">宽度</label>
+            <label for="width" data-i18n="label.width">宽度</label>
             <input
               type="number"
               id="width"
@@ -355,11 +552,12 @@
               min="320"
               max="3840"
               placeholder="像素"
+              data-i18n-placeholder="placeholder.pixels"
             >
           </div>
 
           <div class="form-group">
-            <label for="height">高度</label>
+            <label for="height" data-i18n="label.height">高度</label>
             <input
               type="number"
               id="height"
@@ -368,6 +566,7 @@
               min="240"
               max="2160"
               placeholder="像素"
+              data-i18n-placeholder="placeholder.pixels"
             >
           </div>
         </div>
@@ -379,16 +578,16 @@
               id="fullPage"
               name="fullPage"
             >
-            <label for="fullPage" class="checkbox-label">捕获完整页面</label>
+            <label for="fullPage" class="checkbox-label" data-i18n="label.fullPage">捕获完整页面</label>
           </div>
         </div>
 
-        <button type="submit" id="submitBtn">
+        <button type="submit" id="submitBtn" data-i18n="button.generate">
           生成截图
         </button>
 
         <div class="examples">
-          <div class="examples-label">快速示例</div>
+          <div class="examples-label" data-i18n="label.examples">快速示例</div>
           <a href="#" class="example-link" data-url="https://example.com">Example.com</a>
           <a href="#" class="example-link" data-url="https://bun.sh">Bun</a>
           <a href="#" class="example-link" data-url="https://nodejs.org">Node.js</a>
@@ -403,42 +602,379 @@
     </div>
 
     <footer class="footer">
-      项目地址：<a href="https://github.com/jinzhongjia/screenshot" target="_blank" rel="noopener noreferrer">https://github.com/jinzhongjia/screenshot</a>
-      <div>Find the source code and documentation on GitHub.</div>
+      <span data-i18n="footer.project">项目地址：</span><a href="https://github.com/jinzhongjia/screenshot" target="_blank" rel="noopener noreferrer">https://github.com/jinzhongjia/screenshot</a>
+      <div data-i18n="footer.description">Find the source code and documentation on GitHub.</div>
     </footer>
   </div>
 
   <script>
+    // Translation data
+    const translations = {
+      en: {
+        title: 'Web Screenshot Service',
+        subtitle: 'High-performance web screenshot API built with Bun and Puppeteer',
+        label: {
+          url: 'URL',
+          device: 'Device Emulation',
+          width: 'Width',
+          height: 'Height',
+          fullPage: 'Capture Full Page',
+          examples: 'Quick Examples'
+        },
+        placeholder: {
+          url: 'https://example.com',
+          search: 'Search devices...',
+          pixels: 'pixels'
+        },
+        button: {
+          generate: 'Generate Screenshot',
+          processing: 'Processing...',
+          download: 'Download Image'
+        },
+        device: {
+          loading: 'Loading device list...',
+          custom: 'Custom Size',
+          notFound: 'No matching devices found'
+        },
+        result: {
+          title: 'Web Screenshot',
+          description: 'Description:',
+          device: 'Device:',
+          size: 'Size:',
+          format: 'Format:',
+          fileSize: 'File Size:',
+          unknown: 'Unknown'
+        },
+        loading: {
+          generating: 'Generating screenshot, please wait...'
+        },
+        error: {
+          failed: 'Screenshot Failed',
+          requestFailed: 'Request Failed'
+        },
+        footer: {
+          project: 'Project URL: ',
+          description: 'Find the source code and documentation on GitHub.'
+        }
+      },
+      zh: {
+        title: '网页截图服务',
+        subtitle: '高性能的网页截图 API，基于 Bun 和 Puppeteer 构建',
+        label: {
+          url: '网址',
+          device: '设备模拟',
+          width: '宽度',
+          height: '高度',
+          fullPage: '捕获完整页面',
+          examples: '快速示例'
+        },
+        placeholder: {
+          url: 'https://example.com',
+          search: '搜索设备...',
+          pixels: '像素'
+        },
+        button: {
+          generate: '生成截图',
+          processing: '处理中...',
+          download: '下载图片'
+        },
+        device: {
+          loading: '加载设备列表中...',
+          custom: '自定义尺寸',
+          notFound: '未找到匹配的设备'
+        },
+        result: {
+          title: '网页截图',
+          description: '描述：',
+          device: '设备：',
+          size: '尺寸：',
+          format: '格式：',
+          fileSize: '大小：',
+          unknown: '未知'
+        },
+        loading: {
+          generating: '正在生成截图，请稍候...'
+        },
+        error: {
+          failed: '截图失败',
+          requestFailed: '请求失败'
+        },
+        footer: {
+          project: '项目地址：',
+          description: '在 GitHub 上查看源代码和文档。'
+        }
+      }
+    };
+
+    // Get browser language, default to English
+    function getBrowserLanguage() {
+      const lang = navigator.language || navigator.userLanguage;
+      return lang.startsWith('zh') ? 'zh' : 'en';
+    }
+
+    // Current language
+    let currentLang = getBrowserLanguage();
+
+    // Get translation
+    function t(key) {
+      const keys = key.split('.');
+      let value = translations[currentLang];
+      for (const k of keys) {
+        value = value?.[k];
+      }
+      return value || key;
+    }
+
+    // Update page language
+    function updateLanguage() {
+      // Update all elements with data-i18n attribute
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key);
+      });
+
+      // Update all placeholders with data-i18n-placeholder attribute
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        el.placeholder = t(key);
+      });
+
+      // Update language toggle buttons
+      document.querySelectorAll('.language-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === currentLang);
+      });
+
+      // Update device select text if showing loading or custom
+      if (deviceSelectText.textContent.includes('Loading') || deviceSelectText.textContent.includes('加载') ||
+          deviceSelectText.textContent.includes('Custom') || deviceSelectText.textContent.includes('自定义')) {
+        deviceSelectText.textContent = currentSelectedDevice === ''
+          ? t('device.custom')
+          : deviceSelectText.textContent;
+      }
+
+      // Re-render device options if loaded
+      if (devicesData) {
+        renderDeviceOptions();
+      }
+    }
+
+    // Language toggle event listeners
+    document.getElementById('langEn').addEventListener('click', () => {
+      currentLang = 'en';
+      updateLanguage();
+    });
+
+    document.getElementById('langZh').addEventListener('click', () => {
+      currentLang = 'zh';
+      updateLanguage();
+    });
+
     const form = document.getElementById('screenshotForm');
     const resultDiv = document.getElementById('result');
     const submitBtn = document.getElementById('submitBtn');
     const urlInput = document.getElementById('url');
     const deviceSelect = document.getElementById('device');
+    const deviceSelectTrigger = document.getElementById('deviceSelectTrigger');
+    const deviceSelectText = document.getElementById('deviceSelectText');
+    const deviceSelectDropdown = document.getElementById('deviceSelectDropdown');
+    const deviceSelectOptions = document.getElementById('deviceSelectOptions');
+    const deviceSearchInput = document.getElementById('deviceSearchInput');
     const customSizeRow = document.getElementById('customSizeRow');
     const widthInput = document.getElementById('width');
     const heightInput = document.getElementById('height');
     const fullPageCheckbox = document.getElementById('fullPage');
 
-    // 设备选择事件
-    deviceSelect.addEventListener('change', () => {
-      if (deviceSelect.value === '') {
-        // 自定义尺寸
+    let devicesData = null;
+    let currentSelectedDevice = '';
+
+    // Category name mapping for Chinese labels
+    const categoryLabels = {
+      'iPhone': 'iPhone',
+      'iPad': 'iPad',
+      'Google Pixel': 'Google Pixel',
+      'Samsung Galaxy S': 'Samsung Galaxy S',
+      'Other Android': '其他 Android',
+      'Desktop': '桌面'
+    };
+
+    // Load devices from API
+    async function loadDevices() {
+      try {
+        deviceSelectText.textContent = t('device.loading');
+        const response = await fetch('/devices');
+        const data = await response.json();
+
+        if (data.success && data.devices) {
+          devicesData = data.devices;
+          renderDeviceOptions();
+          deviceSelectText.textContent = t('device.custom');
+        } else {
+          console.error('Failed to load devices');
+          deviceSelectText.textContent = t('device.custom');
+        }
+      } catch (error) {
+        console.error('Error loading devices:', error);
+        deviceSelectText.textContent = t('device.custom');
+      }
+    }
+
+    // Render device options in custom dropdown
+    function renderDeviceOptions(searchTerm = '') {
+      if (!devicesData) return;
+
+      deviceSelectOptions.innerHTML = '';
+      let hasResults = false;
+
+      // Add custom size option first
+      const customOption = document.createElement('div');
+      customOption.className = 'custom-select-option';
+      customOption.dataset.value = '';
+      const customText = t('device.custom');
+      customOption.textContent = customText;
+      if (currentSelectedDevice === '') {
+        customOption.classList.add('selected');
+      }
+      customOption.addEventListener('click', () => selectDevice('', customText));
+
+      if (searchTerm === '' || customText.toLowerCase().includes(searchTerm.toLowerCase())) {
+        deviceSelectOptions.appendChild(customOption);
+        hasResults = true;
+      }
+
+      // Add categorized devices
+      for (const [category, devices] of Object.entries(devicesData)) {
+        if (devices.length === 0) continue;
+
+        const filteredDevices = searchTerm
+          ? devices.filter(device =>
+              device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              `${device.width}x${device.height}`.includes(searchTerm)
+            )
+          : devices;
+
+        if (filteredDevices.length === 0) continue;
+
+        hasResults = true;
+
+        // Create group
+        const group = document.createElement('div');
+        group.className = 'custom-select-group';
+
+        const groupLabel = document.createElement('div');
+        groupLabel.className = 'custom-select-group-label';
+        groupLabel.textContent = categoryLabels[category] || category;
+        group.appendChild(groupLabel);
+
+        filteredDevices.forEach(device => {
+          const option = document.createElement('div');
+          option.className = 'custom-select-option';
+          option.dataset.value = device.name;
+          option.textContent = `${device.name} (${device.width}×${device.height})`;
+
+          if (currentSelectedDevice === device.name) {
+            option.classList.add('selected');
+          }
+
+          option.addEventListener('click', () => {
+            selectDevice(device.name, `${device.name} (${device.width}×${device.height})`);
+          });
+
+          group.appendChild(option);
+        });
+
+        deviceSelectOptions.appendChild(group);
+      }
+
+      // Show no results message
+      if (!hasResults) {
+        const noResults = document.createElement('div');
+        noResults.className = 'custom-select-no-results';
+        noResults.textContent = t('device.notFound');
+        deviceSelectOptions.appendChild(noResults);
+      }
+    }
+
+    // Select a device
+    function selectDevice(value, text) {
+      currentSelectedDevice = value;
+      deviceSelect.value = value;
+      deviceSelectText.textContent = text;
+      closeDropdown();
+
+      // Trigger change event
+      if (value === '') {
         customSizeRow.style.display = 'grid';
         widthInput.removeAttribute('disabled');
         heightInput.removeAttribute('disabled');
         fullPageCheckbox.removeAttribute('disabled');
       } else {
-        // 预设设备
         customSizeRow.style.display = 'none';
         widthInput.setAttribute('disabled', 'true');
         heightInput.setAttribute('disabled', 'true');
-        // 移动设备通常不需要全页面截图
-        if (deviceSelect.value.includes('iPhone') || deviceSelect.value.includes('iPad') ||
-            deviceSelect.value.includes('Pixel') || deviceSelect.value.includes('Galaxy')) {
+        if (value.includes('iPhone') || value.includes('iPad') ||
+            value.includes('Pixel') || value.includes('Galaxy')) {
           fullPageCheckbox.checked = false;
         }
       }
+
+      // Update selected state in options
+      renderDeviceOptions(deviceSearchInput.value);
+    }
+
+    // Toggle dropdown
+    function toggleDropdown() {
+      const isActive = deviceSelectDropdown.classList.contains('active');
+      if (isActive) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
+    }
+
+    // Open dropdown
+    function openDropdown() {
+      deviceSelectTrigger.classList.add('active');
+      deviceSelectDropdown.classList.add('active');
+      deviceSearchInput.value = '';
+      renderDeviceOptions();
+      setTimeout(() => deviceSearchInput.focus(), 100);
+    }
+
+    // Close dropdown
+    function closeDropdown() {
+      deviceSelectTrigger.classList.remove('active');
+      deviceSelectDropdown.classList.remove('active');
+      deviceSearchInput.value = '';
+    }
+
+    // Event listeners for custom select
+    deviceSelectTrigger.addEventListener('click', toggleDropdown);
+
+    deviceSearchInput.addEventListener('input', (e) => {
+      renderDeviceOptions(e.target.value);
     });
+
+    deviceSearchInput.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!deviceSelectTrigger.contains(e.target) && !deviceSelectDropdown.contains(e.target)) {
+        closeDropdown();
+      }
+    });
+
+    // Prevent dropdown close when clicking inside dropdown
+    deviceSelectDropdown.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Initialize language on page load
+    updateLanguage();
+
+    // Load devices on page load
+    loadDevices();
 
     // 示例链接点击事件
     document.querySelectorAll('.example-link').forEach(link => {
@@ -474,11 +1010,11 @@
       resultDiv.innerHTML = `
         <div class="loading">
           <div class="spinner"></div>
-          <p style="color: #718096;">正在生成截图，请稍候...</p>
+          <p style="color: #718096;">${t('loading.generating')}</p>
         </div>
       `;
       submitBtn.disabled = true;
-      submitBtn.textContent = '处理中...';
+      submitBtn.textContent = t('button.processing');
 
       try {
         const response = await fetch('/screenshot', {
@@ -495,29 +1031,29 @@
           const imgData = `data:image/webp;base64,${result.screenshot}`;
 
           const displayInfo = deviceValue && deviceValue !== ''
-            ? `<p><strong>设备：</strong> ${deviceValue}</p>`
+            ? `<p><strong>${t('result.device')}</strong> ${deviceValue}</p>`
             : '';
 
           resultDiv.innerHTML = `
             <div class="result-info">
-              <h3>${result.title || '网页截图'}</h3>
-              ${result.description ? `<p><strong>描述：</strong> ${result.description}</p>` : ''}
+              <h3>${result.title || t('result.title')}</h3>
+              ${result.description ? `<p><strong>${t('result.description')}</strong> ${result.description}</p>` : ''}
               ${displayInfo}
-              <p><strong>尺寸：</strong> ${result.metadata?.width || data.width || '未知'} × ${result.metadata?.height || data.height || '未知'} 像素</p>
-              <p><strong>格式：</strong> ${result.metadata?.format?.toUpperCase() || 'WEBP'}</p>
-              <p><strong>大小：</strong> ${formatFileSize(result.metadata?.size)}</p>
+              <p><strong>${t('result.size')}</strong> ${result.metadata?.width || data.width || t('result.unknown')} × ${result.metadata?.height || data.height || t('result.unknown')} ${t('placeholder.pixels')}</p>
+              <p><strong>${t('result.format')}</strong> ${result.metadata?.format?.toUpperCase() || 'WEBP'}</p>
+              <p><strong>${t('result.fileSize')}</strong> ${formatFileSize(result.metadata?.size)}</p>
             </div>
             <div class="screenshot-preview">
               <img src="${imgData}" alt="Screenshot">
               <button class="download-btn" onclick="downloadScreenshot('${imgData}', '${sanitizeFilename(result.title)}')">
-                下载图片
+                ${t('button.download')}
               </button>
             </div>
           `;
         } else {
           resultDiv.innerHTML = `
             <div class="error">
-              <strong>截图失败</strong><br>
+              <strong>${t('error.failed')}</strong><br>
               ${result.error}
             </div>
           `;
@@ -525,18 +1061,18 @@
       } catch (error) {
         resultDiv.innerHTML = `
           <div class="error">
-            <strong>请求失败</strong><br>
+            <strong>${t('error.requestFailed')}</strong><br>
             ${error.message}
           </div>
         `;
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = '生成截图';
+        submitBtn.textContent = t('button.generate');
       }
     });
 
     function formatFileSize(bytes) {
-      if (!bytes) return '未知';
+      if (!bytes) return t('result.unknown');
       const kb = bytes / 1024;
       if (kb < 1024) return `${kb.toFixed(1)} KB`;
       return `${(kb / 1024).toFixed(2)} MB`;
