@@ -6,7 +6,7 @@ High-performance website screenshot toolkit powered by [Bun](https://bun.sh) and
 
 ## Features
 
-- Capture webpages as `webp`, `png`, `jpeg`, or `pdf`
+- Capture webpages as `webp`, `png`, or `jpeg`
 - Extract page metadata (title, description) alongside images
 - Device emulation presets (mobile, tablet, desktop) and custom viewports
 - Advanced flows: element-only capture, clipping, dark mode, geolocation, form filling, script/CSS injection
@@ -106,7 +106,7 @@ await service.capture({
 await service.close();
 ```
 
-Refer to `examples/` for full scripts covering caching, authentication, PDF generation, geolocation, and more.
+Refer to `examples/` for full scripts covering caching, authentication, geolocation, and more.
 
 ## API Reference
 
