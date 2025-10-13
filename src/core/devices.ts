@@ -83,6 +83,19 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
       isLandscape: false,
     },
   },
+  'iPhone 13 mini': {
+    name: 'iPhone 13 mini',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 375,
+      height: 812,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
   'iPhone 13 Pro Max': {
     name: 'iPhone 13 Pro Max',
     userAgent:
@@ -116,6 +129,19 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
     viewport: {
       width: 393,
       height: 852,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 14 Plus': {
+    name: 'iPhone 14 Plus',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 428,
+      height: 926,
       deviceScaleFactor: 3,
       isMobile: true,
       hasTouch: true,
@@ -161,6 +187,19 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
       isLandscape: false,
     },
   },
+  'iPhone 15 Plus': {
+    name: 'iPhone 15 Plus',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 430,
+      height: 932,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
   'iPhone 15 Pro Max': {
     name: 'iPhone 15 Pro Max',
     userAgent:
@@ -168,6 +207,58 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
     viewport: {
       width: 430,
       height: 932,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 16': {
+    name: 'iPhone 16',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 393,
+      height: 852,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 16 Plus': {
+    name: 'iPhone 16 Plus',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 430,
+      height: 932,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 16 Pro': {
+    name: 'iPhone 16 Pro',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 402,
+      height: 874,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 16 Pro Max': {
+    name: 'iPhone 16 Pro Max',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 440,
+      height: 956,
       deviceScaleFactor: 3,
       isMobile: true,
       hasTouch: true,
@@ -308,6 +399,19 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
       isLandscape: false,
     },
   },
+  'Samsung Galaxy S23 Plus': {
+    name: 'Samsung Galaxy S23 Plus',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 13; SM-S916B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 360,
+      height: 800,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
   'Samsung Galaxy S23 Ultra': {
     name: 'Samsung Galaxy S23 Ultra',
     userAgent:
@@ -315,6 +419,84 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
     viewport: {
       width: 360,
       height: 800,
+      deviceScaleFactor: 3.5,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S24': {
+    name: 'Samsung Galaxy S24',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 14; SM-S921B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 360,
+      height: 800,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S24 Plus': {
+    name: 'Samsung Galaxy S24 Plus',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 14; SM-S926B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 384,
+      height: 854,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S24 Ultra': {
+    name: 'Samsung Galaxy S24 Ultra',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 14; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 384,
+      height: 854,
+      deviceScaleFactor: 3.5,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S25': {
+    name: 'Samsung Galaxy S25',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 15; SM-S931B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 360,
+      height: 800,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S25 Plus': {
+    name: 'Samsung Galaxy S25 Plus',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 15; SM-S936B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 384,
+      height: 854,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'Samsung Galaxy S25 Ultra': {
+    name: 'Samsung Galaxy S25 Ultra',
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 15; SM-S938B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36',
+    viewport: {
+      width: 384,
+      height: 854,
       deviceScaleFactor: 3.5,
       isMobile: true,
       hasTouch: true,

@@ -8,6 +8,7 @@
 import homepage from '../../public/demo.html';
 import { EnhancedScreenshotService } from '../core/screenshot-enhanced';
 import type { ScreenshotOptions } from '../types';
+import { DEVICE_PRESETS } from '../core/devices';
 
 // Server configuration from environment variables
 const PORT = parseInt(process.env.PORT || '3000');
@@ -48,6 +49,53 @@ const server = Bun.serve({
           { status: isReady ? 'healthy' : 'unhealthy', timestamp: new Date().toISOString() },
           { status: isReady ? 200 : 503 }
         );
+      },
+    },
+
+    // Devices list endpoint
+    '/devices': {
+      async GET() {
+        // Group devices by category
+        const grouped = {
+          iPhone: [] as Array<{ name: string; width: number; height: number }>,
+          iPad: [] as Array<{ name: string; width: number; height: number }>,
+          'Google Pixel': [] as Array<{ name: string; width: number; height: number }>,
+          'Samsung Galaxy S': [] as Array<{ name: string; width: number; height: number }>,
+          'Other Android': [] as Array<{ name: string; width: number; height: number }>,
+          Desktop: [] as Array<{ name: string; width: number; height: number }>,
+        };
+
+        // Categorize devices
+        for (const [name, device] of Object.entries(DEVICE_PRESETS)) {
+          const deviceInfo = {
+            name: device.name,
+            width: device.viewport.width,
+            height: device.viewport.height,
+          };
+
+          if (name.includes('iPhone')) {
+            grouped.iPhone.push(deviceInfo);
+          } else if (name.includes('iPad')) {
+            grouped.iPad.push(deviceInfo);
+          } else if (name.includes('Pixel')) {
+            grouped['Google Pixel'].push(deviceInfo);
+          } else if (name.includes('Samsung Galaxy S')) {
+            grouped['Samsung Galaxy S'].push(deviceInfo);
+          } else if (
+            name.includes('OnePlus') ||
+            name.includes('Xiaomi') ||
+            name.includes('Samsung Galaxy Tab')
+          ) {
+            grouped['Other Android'].push(deviceInfo);
+          } else if (name.includes('Desktop') || name.includes('MacBook') || name.includes('Laptop')) {
+            grouped.Desktop.push(deviceInfo);
+          }
+        }
+
+        return Response.json({
+          success: true,
+          devices: grouped,
+        });
       },
     },
 
