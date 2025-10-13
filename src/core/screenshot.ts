@@ -280,14 +280,17 @@ export class ScreenshotService {
       fullPage,
     };
 
+    // PNG 不支持 quality 参数，仅 JPEG 和 WebP 支持
     if ((type === 'jpeg' || type === 'webp') && typeof quality === 'number') {
       screenshotOptions.quality = quality;
     }
 
     const screenshotResult = await page.screenshot(screenshotOptions);
-    return Buffer.isBuffer(screenshotResult)
+    const screenshotBuffer: Buffer = Buffer.isBuffer(screenshotResult)
       ? screenshotResult
       : Buffer.from(screenshotResult as unknown as Uint8Array);
+
+    return screenshotBuffer;
   }
 
   /**

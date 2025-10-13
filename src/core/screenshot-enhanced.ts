@@ -1,4 +1,4 @@
-import type { Page, PDFOptions } from 'puppeteer';
+import type { Page } from 'puppeteer';
 import type {
   ScreenshotOptions,
   ScreenshotResult,
@@ -95,10 +95,6 @@ export class EnhancedScreenshotService extends ScreenshotService {
     page: Page,
     options: ScreenshotOptions
   ): Promise<Buffer> {
-    if (options.type === 'pdf') {
-      return this.generatePDF(page, options);
-    }
-
     if (options.selector) {
       const element = await page.$(options.selector);
       if (!element) {
@@ -122,15 +118,6 @@ export class EnhancedScreenshotService extends ScreenshotService {
     options: ScreenshotOptions,
     screenshot: Buffer
   ): Promise<NonNullable<ScreenshotResult['metadata']>> {
-    if (options.type === 'pdf') {
-      return {
-        width: options.width ?? 0,
-        height: options.height ?? 0,
-        size: screenshot.length,
-        format: 'pdf',
-      };
-    }
-
     if (options.clip) {
       return {
         width: Math.round(options.clip.width),
@@ -304,31 +291,6 @@ export class EnhancedScreenshotService extends ScreenshotService {
     if (options.javascript === false) {
       await page.setJavaScriptEnabled(false);
     }
-  }
-
-  private async generatePDF(page: Page, options: ScreenshotOptions): Promise<Buffer> {
-    const pdfOptions: PDFOptions = {
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '20px',
-        right: '20px',
-        bottom: '20px',
-        left: '20px',
-      },
-    };
-
-    if (options.fullPage) {
-      if (options.width) {
-        pdfOptions.width = `${options.width}px`;
-      }
-      if (options.height) {
-        pdfOptions.height = `${options.height}px`;
-      }
-    }
-
-    const pdfBuffer = await page.pdf(pdfOptions);
-    return Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer);
   }
 
   private getCacheKey(options: ScreenshotOptions): string {

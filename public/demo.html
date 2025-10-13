@@ -292,13 +292,24 @@
       appearance: none;
       height: 6px;
       border-radius: 3px;
-      background: linear-gradient(to right, #e2e8f0 0%, #4a5568 100%);
+      background: #e2e8f0;
       outline: none;
-      transition: opacity 0.2s;
+      cursor: pointer;
     }
 
-    .quality-slider:hover {
-      opacity: 0.8;
+    .quality-slider::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+    }
+
+    .quality-slider::-moz-range-track {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      border: none;
     }
 
     .quality-slider::-webkit-slider-thumb {
@@ -311,11 +322,16 @@
       cursor: pointer;
       transition: all 0.2s;
       box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      margin-top: -7px;
     }
 
     .quality-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.1);
+      transform: scale(1.15);
       box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    }
+
+    .quality-slider::-webkit-slider-thumb:active {
+      transform: scale(1.05);
     }
 
     .quality-slider::-moz-range-thumb {
@@ -330,8 +346,18 @@
     }
 
     .quality-slider::-moz-range-thumb:hover {
-      transform: scale(1.1);
+      transform: scale(1.15);
       box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    }
+
+    .quality-slider::-moz-range-thumb:active {
+      transform: scale(1.05);
+    }
+
+    .quality-slider::-moz-range-progress {
+      background: #4a5568;
+      height: 6px;
+      border-radius: 3px;
     }
 
     .quality-value {
@@ -346,6 +372,64 @@
       font-size: 13px;
       color: #718096;
       margin-top: 8px;
+    }
+
+    /* Format Selection Styles */
+    .format-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .format-option {
+      position: relative;
+    }
+
+    .format-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .format-option label {
+      display: block;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .format-option label:hover {
+      border-color: #cbd5e0;
+      background: #f7fafc;
+    }
+
+    .format-option input[type="radio"]:checked + label {
+      border-color: #1a1a1a;
+      background: #1a1a1a;
+      color: white;
+    }
+
+    .format-info {
+      font-size: 12px;
+      color: #718096;
+      margin-top: 4px;
+      display: block;
+    }
+
+    @media (max-width: 640px) {
+      .format-options {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     button {
@@ -641,6 +725,24 @@
         </div>
 
         <div class="form-group">
+          <label data-i18n="label.format">输出格式</label>
+          <div class="format-options">
+            <div class="format-option">
+              <input type="radio" id="formatWebp" name="format" value="webp" checked>
+              <label for="formatWebp">WebP</label>
+            </div>
+            <div class="format-option">
+              <input type="radio" id="formatJpeg" name="format" value="jpeg">
+              <label for="formatJpeg">JPEG</label>
+            </div>
+            <div class="format-option">
+              <input type="radio" id="formatPng" name="format" value="png">
+              <label for="formatPng">PNG</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
           <div class="checkbox-group">
             <input
               type="checkbox"
@@ -651,7 +753,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="qualityGroup">
           <label for="quality" data-i18n="label.quality">图片质量</label>
           <div class="quality-control">
             <input
@@ -704,6 +806,7 @@
           device: 'Device Emulation',
           width: 'Width',
           height: 'Height',
+          format: 'Output Format',
           fullPage: 'Capture Full Page',
           quality: 'Image Quality',
           examples: 'Quick Examples'
@@ -755,6 +858,7 @@
           device: '设备模拟',
           width: '宽度',
           height: '高度',
+          format: '输出格式',
           fullPage: '捕获完整页面',
           quality: '图片质量',
           examples: '快速示例'
@@ -879,13 +983,41 @@
     const fullPageCheckbox = document.getElementById('fullPage');
     const qualitySlider = document.getElementById('quality');
     const qualityValue = document.getElementById('qualityValue');
+    const qualityGroup = document.getElementById('qualityGroup');
+    const formatRadios = document.querySelectorAll('input[name="format"]');
 
     let devicesData = null;
     let currentSelectedDevice = '';
 
-    // Update quality value display
-    qualitySlider.addEventListener('input', (e) => {
-      qualityValue.textContent = e.target.value;
+    // Update quality value display and slider fill
+    function updateQualitySlider() {
+      const value = qualitySlider.value;
+      const min = qualitySlider.min || 1;
+      const max = qualitySlider.max || 100;
+      const percentage = ((value - min) / (max - min)) * 100;
+
+      // Update displayed value
+      qualityValue.textContent = value;
+
+      // Update slider background (for WebKit browsers)
+      qualitySlider.style.background = `linear-gradient(to right, #4a5568 0%, #4a5568 ${percentage}%, #e2e8f0 ${percentage}%, #e2e8f0 100%)`;
+    }
+
+    // Initialize slider on page load
+    updateQualitySlider();
+
+    qualitySlider.addEventListener('input', updateQualitySlider);
+
+    // Handle format selection - hide quality for PNG
+    formatRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        const selectedFormat = e.target.value;
+        if (selectedFormat === 'png') {
+          qualityGroup.style.display = 'none';
+        } else {
+          qualityGroup.style.display = 'block';
+        }
+      });
     });
 
     // Category name mapping for Chinese labels
@@ -1092,12 +1224,19 @@
       const formData = new FormData(form);
       const deviceValue = formData.get('device');
 
+      const selectedFormat = formData.get('format') || 'webp';
+
       const data = {
         url: formData.get('url'),
         fullPage: formData.get('fullPage') === 'on',
-        quality: parseInt(formData.get('quality')),
+        type: selectedFormat,
         format: 'json'
       };
+
+      // Only add quality for formats that support it (not PNG)
+      if (selectedFormat !== 'png') {
+        data.quality = parseInt(formData.get('quality'));
+      }
 
       // 如果选择了设备，添加设备参数；否则添加自定义尺寸
       if (deviceValue && deviceValue !== '') {
@@ -1130,7 +1269,10 @@
         const result = await response.json();
 
         if (result.success) {
-          const imgData = `data:image/webp;base64,${result.screenshot}`;
+          const format = result.metadata?.format || selectedFormat;
+          const mimeType = getMimeType(format);
+          const fileExt = getFileExtension(format);
+          const imgData = `data:${mimeType};base64,${result.screenshot}`;
 
           const displayInfo = deviceValue && deviceValue !== ''
             ? `<p><strong>${t('result.device')}</strong> ${deviceValue}</p>`
@@ -1142,12 +1284,12 @@
               ${result.description ? `<p><strong>${t('result.description')}</strong> ${result.description}</p>` : ''}
               ${displayInfo}
               <p><strong>${t('result.size')}</strong> ${result.metadata?.width || data.width || t('result.unknown')} × ${result.metadata?.height || data.height || t('result.unknown')} ${t('placeholder.pixels')}</p>
-              <p><strong>${t('result.format')}</strong> ${result.metadata?.format?.toUpperCase() || 'WEBP'}</p>
+              <p><strong>${t('result.format')}</strong> ${format.toUpperCase()}</p>
               <p><strong>${t('result.fileSize')}</strong> ${formatFileSize(result.metadata?.size)}</p>
             </div>
             <div class="screenshot-preview">
               <img src="${imgData}" alt="Screenshot">
-              <button class="download-btn" onclick="downloadScreenshot('${imgData}', '${sanitizeFilename(result.title)}')">
+              <button class="download-btn" onclick="downloadScreenshot('${imgData}', '${sanitizeFilename(result.title)}', '${fileExt}')">
                 ${t('button.download')}
               </button>
             </div>
@@ -1185,10 +1327,30 @@
       return title.replace(/[^a-z0-9]/gi, '-').toLowerCase();
     }
 
-    function downloadScreenshot(dataUrl, title) {
+    function getMimeType(format) {
+      const mimeTypes = {
+        'webp': 'image/webp',
+        'png': 'image/png',
+        'jpeg': 'image/jpeg',
+        'jpg': 'image/jpeg'
+      };
+      return mimeTypes[format] || 'image/webp';
+    }
+
+    function getFileExtension(format) {
+      const extensions = {
+        'webp': 'webp',
+        'png': 'png',
+        'jpeg': 'jpg',
+        'jpg': 'jpg'
+      };
+      return extensions[format] || 'webp';
+    }
+
+    function downloadScreenshot(dataUrl, title, extension) {
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = `${title || 'screenshot'}-${Date.now()}.webp`;
+      link.download = `${title || 'screenshot'}-${Date.now()}.${extension || 'webp'}`;
       link.click();
     }
   </script>

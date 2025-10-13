@@ -24,7 +24,7 @@
     "demo": "bun ./src/server/index.ts",
     "build": "bun build ./src/index.ts --outdir dist --target bun",
     "build:lib": "tsc --project tsconfig.build.json",
-    "build:demo": "bun build ./src/server/index.ts --compile --minify --sourcemap --bytecode --outfile dist/demo-server",
+    "build:demo": "bun build ./src/server/index.ts --compile --minify --sourcemap --outfile dist/demo-server",
     "clean": "bunx rimraf dist out .bun",
     "test": "bun test",
     "test:basic": "bun test test/screenshot.test.ts",

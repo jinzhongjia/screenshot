@@ -111,6 +111,7 @@ const server = Bun.serve({
             fullPage?: boolean;
             device?: string;
             quality?: number;
+            type?: 'webp' | 'jpeg' | 'png';
             format?: 'json' | 'image';
           };
 

@@ -92,10 +92,10 @@ export interface ScreenshotOptions {
   height?: number;
   /** 是否全页面截图，默认 false */
   fullPage?: boolean;
-  /** 截图质量（1-100），仅对 jpeg 格式有效 */
+  /** 截图质量（1-100），仅对 jpeg 和 webp 格式有效 */
   quality?: number;
   /** 截图格式 */
-  type?: 'webp' | 'jpeg' | 'png' | 'pdf';
+  type?: 'webp' | 'jpeg' | 'png';
   /** 等待策略 */
   waitUntil?: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2';
   /** 超时时间（毫秒） */

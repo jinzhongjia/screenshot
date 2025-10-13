@@ -401,42 +401,6 @@ describe('EnhancedScreenshotService - Authentication', () => {
   }, 30000);
 });
 
-describe('EnhancedScreenshotService - PDF Generation', () => {
-  let service: EnhancedScreenshotService;
-
-  beforeAll(() => {
-    service = createEnhancedScreenshotService();
-  });
-
-  afterAll(async () => {
-    await service.close();
-  });
-
-  test('should generate PDF', async () => {
-    const result = await service.capture({
-      url: 'https://example.com',
-      type: 'pdf',
-    });
-
-    expect(result.success).toBe(true);
-    expect(result.screenshot).toBeInstanceOf(Buffer);
-    expect(result.metadata?.format).toBe('pdf');
-  }, 30000);
-
-  test('should generate PDF with custom dimensions', async () => {
-    const result = await service.capture({
-      url: 'https://example.com',
-      type: 'pdf',
-      width: 1200,
-      height: 800,
-      fullPage: true,
-    });
-
-    expect(result.success).toBe(true);
-    expect(result.metadata?.format).toBe('pdf');
-  }, 30000);
-});
-
 describe('EnhancedScreenshotService - WaitUntil Options', () => {
   let service: EnhancedScreenshotService;
 
