@@ -110,6 +110,7 @@ const server = Bun.serve({
             height?: number;
             fullPage?: boolean;
             device?: string;
+            quality?: number;
             format?: 'json' | 'image';
           };
 

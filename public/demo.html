@@ -279,6 +279,75 @@
       user-select: none;
     }
 
+    /* Quality Slider Styles */
+    .quality-control {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .quality-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(to right, #e2e8f0 0%, #4a5568 100%);
+      outline: none;
+      transition: opacity 0.2s;
+    }
+
+    .quality-slider:hover {
+      opacity: 0.8;
+    }
+
+    .quality-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .quality-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    }
+
+    .quality-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .quality-slider::-moz-range-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    }
+
+    .quality-value {
+      min-width: 50px;
+      text-align: right;
+      font-weight: 500;
+      color: #1a1a1a;
+      font-size: 15px;
+    }
+
+    .quality-info {
+      font-size: 13px;
+      color: #718096;
+      margin-top: 8px;
+    }
+
     button {
       background: #1a1a1a;
       color: white;
@@ -582,6 +651,23 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="quality" data-i18n="label.quality">图片质量</label>
+          <div class="quality-control">
+            <input
+              type="range"
+              id="quality"
+              name="quality"
+              min="1"
+              max="100"
+              value="90"
+              class="quality-slider"
+            >
+            <span class="quality-value" id="qualityValue">90</span>
+          </div>
+          <div class="quality-info" data-i18n="info.quality">较低的质量会产生较小的文件，但可能降低图像清晰度。仅对 JPEG 和 WebP 格式有效。</div>
+        </div>
+
         <button type="submit" id="submitBtn" data-i18n="button.generate">
           生成截图
         </button>
@@ -619,7 +705,11 @@
           width: 'Width',
           height: 'Height',
           fullPage: 'Capture Full Page',
+          quality: 'Image Quality',
           examples: 'Quick Examples'
+        },
+        info: {
+          quality: 'Lower quality produces smaller files but may reduce image clarity. Only effective for JPEG and WebP formats.'
         },
         placeholder: {
           url: 'https://example.com',
@@ -666,7 +756,11 @@
           width: '宽度',
           height: '高度',
           fullPage: '捕获完整页面',
+          quality: '图片质量',
           examples: '快速示例'
+        },
+        info: {
+          quality: '较低的质量会产生较小的文件，但可能降低图像清晰度。仅对 JPEG 和 WebP 格式有效。'
         },
         placeholder: {
           url: 'https://example.com',
@@ -783,9 +877,16 @@
     const widthInput = document.getElementById('width');
     const heightInput = document.getElementById('height');
     const fullPageCheckbox = document.getElementById('fullPage');
+    const qualitySlider = document.getElementById('quality');
+    const qualityValue = document.getElementById('qualityValue');
 
     let devicesData = null;
     let currentSelectedDevice = '';
+
+    // Update quality value display
+    qualitySlider.addEventListener('input', (e) => {
+      qualityValue.textContent = e.target.value;
+    });
 
     // Category name mapping for Chinese labels
     const categoryLabels = {
@@ -994,6 +1095,7 @@
       const data = {
         url: formData.get('url'),
         fullPage: formData.get('fullPage') === 'on',
+        quality: parseInt(formData.get('quality')),
         format: 'json'
       };
 
