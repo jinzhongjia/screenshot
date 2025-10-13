@@ -10,20 +10,16 @@ export {
   EnhancedScreenshotService,
   createEnhancedScreenshotService,
 } from './core/screenshot-enhanced';
-export { ApiServer } from './server/api';
 export { DEVICE_PRESETS, getDevice } from './core/devices';
 
 // 导出所有类型定义
 export type {
   ScreenshotOptions,
   ScreenshotResult,
-  ApiRequestBody,
-  ApiJsonResponse,
   BrowserConfig,
   BrowserPoolConfig,
   BrowserPoolAcquireOptions,
   BrowserPoolAcquireResult,
-  ServerConfig,
   DevicePreset,
   AuthConfig,
   PageActions,

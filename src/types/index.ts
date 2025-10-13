@@ -179,32 +179,6 @@ export interface ScreenshotResult {
 }
 
 /**
- * API 请求体
- */
-export interface ApiRequestBody extends Omit<ScreenshotOptions, 'type'> {
-  /** 返回格式 */
-  format?: 'json' | 'image';
-}
-
-/**
- * API 响应（JSON格式）
- */
-export interface ApiJsonResponse {
-  success: boolean;
-  title?: string;
-  description?: string;
-  /** Base64 编码的截图 */
-  screenshot?: string;
-  error?: string;
-  metadata?: {
-    width: number;
-    height: number;
-    size: number;
-    format: string;
-  };
-}
-
-/**
  * 浏览器配置选项
  */
 export interface BrowserConfig {
@@ -245,47 +219,4 @@ export interface BrowserPoolAcquireOptions {
 export interface BrowserPoolAcquireResult {
   browser: Browser;
   poolKey: string;
-}
-
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'HEAD';
-
-export interface RouteHandlerContext {
-  config: ServerConfig;
-  screenshotService: import('../core/screenshot').ScreenshotService;
-}
-
-export type RouteHandler = (
-  request: Request,
-  context: RouteHandlerContext
-) => Promise<Response> | Response;
-
-export interface ApiRouteDefinition {
-  path: string;
-  methods?: HttpMethod | HttpMethod[];
-  handler: RouteHandler;
-}
-
-export interface ApiServerOptions extends ServerConfig {
-  routes?: ApiRouteDefinition[];
-  screenshotService?: import('../core/screenshot').ScreenshotService;
-}
-
-/**
- * 服务配置
- */
-export interface ServerConfig {
-  /** 服务端口 */
-  port?: number;
-  /** 主机地址 */
-  host?: string;
-  /** 是否启用 CORS */
-  cors?: boolean;
-  /** 最大请求体大小 */
-  maxBodySize?: string;
-  /** 是否启用演示页面 */
-  enableDemo?: boolean;
-  /** 浏览器配置 */
-  browser?: BrowserConfig;
-  /** 浏览器池全局配置 */
-  pool?: BrowserPoolConfig;
 }

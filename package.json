@@ -10,11 +10,6 @@
       "types": "./dist/index.d.ts",
       "import": "./src/index.ts",
       "require": "./dist/index.js"
-    },
-    "./server": {
-      "types": "./dist/server/index.d.ts",
-      "import": "./src/server/index.ts",
-      "require": "./dist/server/index.js"
     }
   },
   "files": [
@@ -26,14 +21,14 @@
   ],
   "scripts": {
     "dev": "bun --hot ./src/server/index.ts",
+    "demo": "bun ./src/server/index.ts",
     "build": "bun build ./src/index.ts --outdir dist --target bun",
     "build:lib": "tsc --project tsconfig.build.json",
-    "build:binary": "bun build ./src/server/index.ts --compile --outfile dist/screenshot-server",
+    "build:demo": "bun build ./src/server/index.ts --compile --outfile dist/demo-server",
     "clean": "bunx rimraf dist out .bun",
     "test": "bun test",
     "test:basic": "bun test test/screenshot.test.ts",
     "test:enhanced": "bun test test/screenshot-enhanced.test.ts",
-    "test:api": "bun test test/api-server.test.ts",
     "test:devices": "bun test test/devices.test.ts",
     "test:integration": "bun test test/integration.test.ts",
     "test:quick": "bun test test/quick-test.test.ts",
