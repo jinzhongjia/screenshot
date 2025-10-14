@@ -265,6 +265,58 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
       isLandscape: false,
     },
   },
+  'iPhone 17': {
+    name: 'iPhone 17',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 393,
+      height: 852,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 17 Plus': {
+    name: 'iPhone 17 Plus',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 430,
+      height: 932,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 17 Pro': {
+    name: 'iPhone 17 Pro',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 402,
+      height: 874,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
+  'iPhone 17 Pro Max': {
+    name: 'iPhone 17 Pro Max',
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 19_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/19.0 Mobile/15E148 Safari/604.1',
+    viewport: {
+      width: 440,
+      height: 956,
+      deviceScaleFactor: 3,
+      isMobile: true,
+      hasTouch: true,
+      isLandscape: false,
+    },
+  },
 
   // iPad 系列
   iPad: {
