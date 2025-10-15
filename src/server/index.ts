@@ -87,7 +87,11 @@ const server = Bun.serve({
             name.includes('Samsung Galaxy Tab')
           ) {
             grouped['Other Android'].push(deviceInfo);
-          } else if (name.includes('Desktop') || name.includes('MacBook') || name.includes('Laptop')) {
+          } else if (
+            name.includes('Desktop') ||
+            name.includes('MacBook') ||
+            name.includes('Laptop')
+          ) {
             grouped.Desktop.push(deviceInfo);
           }
         }
