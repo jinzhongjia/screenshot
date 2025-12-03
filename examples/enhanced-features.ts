@@ -97,20 +97,20 @@ async function authenticatedScreenshot() {
   }
 }
 
-// 示例 5: PDF生成
-async function generatePDF() {
-  console.log('\n📄 示例 5: 生成PDF文档');
+// 示例 5: PNG格式全页截图
+async function fullPagePngScreenshot() {
+  console.log('\n📄 示例 5: PNG格式全页截图');
 
   const result = await service.capture({
     url: 'https://www.typescriptlang.org',
-    type: 'pdf',
+    type: 'png',
     fullPage: true,
   });
 
   if (result.success) {
-    console.log('✅ PDF生成成功');
+    console.log('✅ PNG全页截图成功');
     console.log('   大小:', Math.round(result.metadata!.size / 1024), 'KB');
-    await Bun.write('document.pdf', result.screenshot!);
+    await Bun.write('fullpage.png', result.screenshot!);
   }
 }
 
@@ -284,7 +284,7 @@ async function main() {
     await elementScreenshot();
     await pageActionsScreenshot();
     await authenticatedScreenshot();
-    await generatePDF();
+    await fullPagePngScreenshot();
     await darkModeScreenshot();
     await geolocationScreenshot();
     await clipScreenshot();

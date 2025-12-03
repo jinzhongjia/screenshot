@@ -16,6 +16,7 @@ export { DEVICE_PRESETS, getDevice } from './core/devices';
 export type {
   ScreenshotOptions,
   ScreenshotResult,
+  ApiJsonResponse,
   BrowserConfig,
   BrowserPoolConfig,
   BrowserPoolAcquireOptions,

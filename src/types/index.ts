@@ -179,6 +179,33 @@ export interface ScreenshotResult {
 }
 
 /**
+ * API JSON 响应格式
+ */
+export interface ApiJsonResponse {
+  /** 是否成功 */
+  success: boolean;
+  /** 页面标题 */
+  title?: string;
+  /** 页面描述 */
+  description?: string;
+  /** Base64 编码的截图数据 */
+  screenshot?: string;
+  /** 错误信息 */
+  error?: string;
+  /** 元数据 */
+  metadata?: {
+    /** 实际截图宽度 */
+    width: number;
+    /** 实际截图高度 */
+    height: number;
+    /** 文件大小（字节） */
+    size: number;
+    /** 截图格式 */
+    format: string;
+  };
+}
+
+/**
  * 浏览器配置选项
  */
 export interface BrowserConfig {
