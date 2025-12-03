@@ -1,18 +1,18 @@
 /**
- * 增强功能使用示例
+ * Enhanced features usage examples
  */
 
 import { createEnhancedScreenshotService } from '../src';
 
-// 创建增强服务实例
+// Create enhanced service instance
 const service = createEnhancedScreenshotService({
   headless: true,
   defaultTimeout: 30000,
 });
 
-// 示例 1: 移动设备模拟
+// Example 1: Mobile device emulation
 async function mobileScreenshot() {
-  console.log('📱 示例 1: iPhone 12 Pro 截图');
+  console.log('📱 Example 1: iPhone 12 Pro screenshot');
 
   const result = await service.capture({
     url: 'https://example.com',
@@ -21,38 +21,38 @@ async function mobileScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ 移动设备截图成功');
-    console.log(`   尺寸: ${result.metadata?.width}x${result.metadata?.height}`);
+    console.log('✅ Mobile device screenshot successful');
+    console.log(`   Dimensions: ${result.metadata?.width}x${result.metadata?.height}`);
     await Bun.write('mobile-iphone12pro.webp', result.screenshot!);
   }
 }
 
-// 示例 2: 元素选择器截图
+// Example 2: Element selector screenshot
 async function elementScreenshot() {
-  console.log('\n🎯 示例 2: 只截取特定元素');
+  console.log('\n🎯 Example 2: Capture specific element only');
 
   const result = await service.capture({
     url: 'https://github.com',
-    selector: '.Header', // 只截取页面头部
+    selector: '.Header', // Only capture the page header
     type: 'png',
   });
 
   if (result.success) {
-    console.log('✅ 元素截图成功');
+    console.log('✅ Element screenshot successful');
     await Bun.write('element-header.png', result.screenshot!);
   }
 }
 
-// 示例 3: 页面操作后截图
+// Example 3: Screenshot after page actions
 async function pageActionsScreenshot() {
-  console.log('\n🎬 示例 3: 执行页面操作后截图');
+  console.log('\n🎬 Example 3: Screenshot after page actions');
 
   const result = await service.capture({
     url: 'https://example.com',
     actions: {
-      // 等待页面加载
+      // Wait for page to load
       waitForSelector: 'h1',
-      // 注入自定义CSS
+      // Inject custom CSS
       injectCSS: `
         body {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -63,22 +63,22 @@ async function pageActionsScreenshot() {
           text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
       `,
-      // 隐藏某些元素
+      // Hide certain elements
       hideElements: ['.advertisement', '.cookie-banner'],
-      // 延迟1秒
+      // Delay 1 second
       delay: 1000,
     },
   });
 
   if (result.success) {
-    console.log('✅ 页面操作截图成功');
+    console.log('✅ Page actions screenshot successful');
     await Bun.write('page-actions.webp', result.screenshot!);
   }
 }
 
-// 示例 4: 认证页面截图
+// Example 4: Authenticated page screenshot
 async function authenticatedScreenshot() {
-  console.log('\n🔐 示例 4: 带认证的页面截图');
+  console.log('\n🔐 Example 4: Authenticated page screenshot');
 
   const result = await service.capture({
     url: 'https://httpbin.org/basic-auth/user/pass',
@@ -91,15 +91,15 @@ async function authenticatedScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ 认证页面截图成功');
-    console.log('   标题:', result.title);
+    console.log('✅ Authenticated page screenshot successful');
+    console.log('   Title:', result.title);
     await Bun.write('authenticated.webp', result.screenshot!);
   }
 }
 
-// 示例 5: PNG格式全页截图
+// Example 5: Full page PNG screenshot
 async function fullPagePngScreenshot() {
-  console.log('\n📄 示例 5: PNG格式全页截图');
+  console.log('\n📄 Example 5: Full page PNG screenshot');
 
   const result = await service.capture({
     url: 'https://www.typescriptlang.org',
@@ -108,15 +108,15 @@ async function fullPagePngScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ PNG全页截图成功');
-    console.log('   大小:', Math.round(result.metadata!.size / 1024), 'KB');
+    console.log('✅ Full page PNG screenshot successful');
+    console.log('   Size:', Math.round(result.metadata!.size / 1024), 'KB');
     await Bun.write('fullpage.png', result.screenshot!);
   }
 }
 
-// 示例 6: 暗黑模式截图
+// Example 6: Dark mode screenshot
 async function darkModeScreenshot() {
-  console.log('\n🌙 示例 6: 暗黑模式截图');
+  console.log('\n🌙 Example 6: Dark mode screenshot');
 
   const result = await service.capture({
     url: 'https://github.com',
@@ -126,14 +126,14 @@ async function darkModeScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ 暗黑模式截图成功');
+    console.log('✅ Dark mode screenshot successful');
     await Bun.write('dark-mode.webp', result.screenshot!);
   }
 }
 
-// 示例 7: 地理位置模拟
+// Example 7: Geolocation emulation
 async function geolocationScreenshot() {
-  console.log('\n📍 示例 7: 地理位置模拟截图');
+  console.log('\n📍 Example 7: Geolocation emulation screenshot');
 
   const result = await service.capture({
     url: 'https://www.google.com/maps',
@@ -147,14 +147,14 @@ async function geolocationScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ 地理位置模拟成功');
+    console.log('✅ Geolocation emulation successful');
     await Bun.write('geolocation.webp', result.screenshot!);
   }
 }
 
-// 示例 8: 自定义视口裁剪
+// Example 8: Custom viewport clipping
 async function clipScreenshot() {
-  console.log('\n✂️ 示例 8: 自定义裁剪区域');
+  console.log('\n✂️ Example 8: Custom clip region');
 
   const result = await service.capture({
     url: 'https://example.com',
@@ -167,31 +167,31 @@ async function clipScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ 裁剪截图成功');
-    console.log(`   裁剪尺寸: 800x600`);
+    console.log('✅ Clipped screenshot successful');
+    console.log('   Clip dimensions: 800x600');
     await Bun.write('clipped.webp', result.screenshot!);
   }
 }
 
-// 示例 9: 带缓存的截图
+// Example 9: Cached screenshot
 async function cachedScreenshot() {
-  console.log('\n💾 示例 9: 带缓存的截图');
+  console.log('\n💾 Example 9: Cached screenshot');
 
-  // 第一次请求
-  console.log('   第一次请求...');
+  // First request
+  console.log('   First request...');
   let start = Date.now();
   let result = await service.capture({
     url: 'https://example.com',
     cacheKey: 'example-homepage',
-    cacheTTL: 60, // 缓存60秒
+    cacheTTL: 60, // Cache for 60 seconds
   });
 
   if (result.success) {
-    console.log(`   ✅ 耗时: ${Date.now() - start}ms`);
+    console.log(`   ✅ Duration: ${Date.now() - start}ms`);
   }
 
-  // 第二次请求（应该从缓存返回）
-  console.log('   第二次请求（从缓存）...');
+  // Second request (should return from cache)
+  console.log('   Second request (from cache)...');
   start = Date.now();
   result = await service.capture({
     url: 'https://example.com',
@@ -200,14 +200,14 @@ async function cachedScreenshot() {
   });
 
   if (result.success) {
-    console.log(`   ✅ 耗时: ${Date.now() - start}ms (应该更快)`);
+    console.log(`   ✅ Duration: ${Date.now() - start}ms (should be faster)`);
     await Bun.write('cached.webp', result.screenshot!);
   }
 }
 
-// 示例 10: 填充表单后截图
+// Example 10: Form fill screenshot
 async function formFillScreenshot() {
-  console.log('\n📝 示例 10: 填充表单后截图');
+  console.log('\n📝 Example 10: Form fill screenshot');
 
   const result = await service.capture({
     url: 'https://github.com/login',
@@ -222,14 +222,14 @@ async function formFillScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ 表单填充截图成功');
+    console.log('✅ Form fill screenshot successful');
     await Bun.write('form-filled.webp', result.screenshot!);
   }
 }
 
-// 示例 11: 4K分辨率截图
+// Example 11: 4K resolution screenshot
 async function highResScreenshot() {
-  console.log('\n🖥️ 示例 11: 4K分辨率截图');
+  console.log('\n🖥️ Example 11: 4K resolution screenshot');
 
   const result = await service.capture({
     url: 'https://www.apple.com',
@@ -239,27 +239,27 @@ async function highResScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ 4K截图成功');
-    console.log(`   尺寸: ${result.metadata?.width}x${result.metadata?.height}`);
-    console.log('   大小:', Math.round(result.metadata!.size / 1024), 'KB');
+    console.log('✅ 4K screenshot successful');
+    console.log(`   Dimensions: ${result.metadata?.width}x${result.metadata?.height}`);
+    console.log('   Size:', Math.round(result.metadata!.size / 1024), 'KB');
     await Bun.write('4k-screenshot.jpeg', result.screenshot!);
   }
 }
 
-// 示例 12: 等待特定元素后截图
+// Example 12: Wait for element screenshot
 async function waitForElementScreenshot() {
-  console.log('\n⏳ 示例 12: 等待特定元素出现');
+  console.log('\n⏳ Example 12: Wait for specific element');
 
   const result = await service.capture({
     url: 'https://example.com',
     actions: {
-      // 等待特定元素出现
+      // Wait for specific element to appear
       waitForSelector: 'footer',
-      // 滚动到底部
+      // Scroll to bottom
       scrollToElement: 'footer',
-      // 等待动画完成
+      // Wait for animation to complete
       delay: 2000,
-      // 注入JS执行
+      // Inject JS to execute
       injectJS: `
         document.querySelector('h1').innerText = 'Screenshot Service Demo';
         document.body.style.transition = 'all 0.5s ease';
@@ -269,14 +269,14 @@ async function waitForElementScreenshot() {
   });
 
   if (result.success) {
-    console.log('✅ 等待元素截图成功');
+    console.log('✅ Wait for element screenshot successful');
     await Bun.write('wait-element.webp', result.screenshot!);
   }
 }
 
-// 主函数
+// Main function
 async function main() {
-  console.log('🚀 增强截图功能示例\n');
+  console.log('🚀 Enhanced Screenshot Features Examples\n');
   console.log('='.repeat(50));
 
   try {
@@ -293,18 +293,18 @@ async function main() {
     await highResScreenshot();
     await waitForElementScreenshot();
 
-    console.log('\n✨ 所有增强功能示例运行完成！');
+    console.log('\n✨ All enhanced feature examples completed!');
 
-    // 清理缓存
+    // Clear cache
     service.clearCache();
   } catch (error) {
-    console.error('\n❌ 发生错误:', error);
+    console.error('\n❌ Error occurred:', error);
   } finally {
     await service.close();
   }
 }
 
-// 运行示例
+// Run examples
 if (import.meta.main) {
   main();
 }

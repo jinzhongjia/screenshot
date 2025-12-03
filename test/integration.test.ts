@@ -58,8 +58,8 @@ describe('Integration Tests', () => {
     test('should handle rapid sequential screenshots', async () => {
       const urls = ['https://example.com', 'https://example.org', 'https://example.net'];
 
-      // 快速连续执行截图（不是真正的并行）
-      // 这测试了服务能够快速处理多个请求
+      // Execute screenshots in quick succession (not truly parallel)
+      // This tests the service's ability to process multiple requests quickly
       const results = [];
       for (const url of urls) {
         const result = await service.capture({ url });
@@ -74,7 +74,7 @@ describe('Integration Tests', () => {
     }, 45000);
 
     test('should capture with multiple options combined', async () => {
-      // 添加小延迟避免与前一个测试的资源冲突
+      // Add small delay to avoid resource conflicts with previous test
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const result = await service.capture({
@@ -99,7 +99,7 @@ describe('Integration Tests', () => {
     }, 45000);
 
     test('should handle device emulation with actions', async () => {
-      // 添加小延迟避免与前一个测试的资源冲突
+      // Add small delay to avoid resource conflicts with previous test
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const result = await service.capture({
@@ -116,7 +116,7 @@ describe('Integration Tests', () => {
     }, 45000);
 
     test('should cache multiple requests', async () => {
-      // 添加小延迟避免与前一个测试的资源冲突
+      // Add small delay to avoid resource conflicts with previous test
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const options = {

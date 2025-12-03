@@ -1,13 +1,13 @@
 /**
- * 基本使用示例
+ * Basic usage examples
  */
 
 import { createScreenshotService, ScreenshotService } from '../src';
 import type { ScreenshotOptions, ScreenshotResult } from '../src';
 
-// 示例 1: 简单截图
+// Example 1: Simple screenshot
 async function simpleCapture() {
-  console.log('📸 示例 1: 简单截图');
+  console.log('📸 Example 1: Simple screenshot');
 
   const service = createScreenshotService();
 
@@ -18,23 +18,23 @@ async function simpleCapture() {
   });
 
   if (result.success) {
-    console.log('✅ 截图成功');
-    console.log('   标题:', result.title);
-    console.log('   描述:', result.description);
-    console.log('   大小:', result.metadata?.size, 'bytes');
+    console.log('✅ Screenshot successful');
+    console.log('   Title:', result.title);
+    console.log('   Description:', result.description);
+    console.log('   Size:', result.metadata?.size, 'bytes');
 
-    // 保存到文件
+    // Save to file
     await Bun.write('example-simple.webp', result.screenshot!);
   } else {
-    console.error('❌ 截图失败:', result.error);
+    console.error('❌ Screenshot failed:', result.error);
   }
 
   await service.close();
 }
 
-// 示例 2: 全页面截图
+// Example 2: Full page screenshot
 async function fullPageCapture() {
-  console.log('\n📸 示例 2: 全页面截图');
+  console.log('\n📸 Example 2: Full page screenshot');
 
   const service = new ScreenshotService({
     headless: true,
@@ -48,8 +48,8 @@ async function fullPageCapture() {
   });
 
   if (result.success) {
-    console.log('✅ 全页面截图成功');
-    console.log('   实际尺寸:', `${result.metadata?.width}x${result.metadata?.height}`);
+    console.log('✅ Full page screenshot successful');
+    console.log('   Actual dimensions:', `${result.metadata?.width}x${result.metadata?.height}`);
 
     await Bun.write('github-fullpage.png', result.screenshot!);
   }
@@ -57,9 +57,9 @@ async function fullPageCapture() {
   await service.close();
 }
 
-// 示例 3: 批量截图
+// Example 3: Batch screenshot
 async function batchCapture() {
-  console.log('\n📸 示例 3: 批量截图');
+  console.log('\n📸 Example 3: Batch screenshot');
 
   const urls = ['https://example.com', 'https://bun.sh', 'https://www.typescriptlang.org'];
 
@@ -67,7 +67,7 @@ async function batchCapture() {
   const results: ScreenshotResult[] = [];
 
   for (const url of urls) {
-    console.log(`   正在截图: ${url}`);
+    console.log(`   Capturing: ${url}`);
 
     const result = await service.capture({
       url,
@@ -82,22 +82,22 @@ async function batchCapture() {
     if (result.success) {
       const filename = `batch-${url.replace(/[^a-z0-9]/gi, '_')}.jpeg`;
       await Bun.write(filename, result.screenshot!);
-      console.log(`   ✅ 已保存: ${filename}`);
+      console.log(`   ✅ Saved: ${filename}`);
     } else {
-      console.log(`   ❌ 失败: ${result.error}`);
+      console.log(`   ❌ Failed: ${result.error}`);
     }
   }
 
   await service.close();
 
-  // 统计
+  // Statistics
   const successful = results.filter((r) => r.success).length;
-  console.log(`\n📊 批量截图完成: ${successful}/${urls.length} 成功`);
+  console.log(`\n📊 Batch capture completed: ${successful}/${urls.length} successful`);
 }
 
-// 示例 4: 自定义配置
+// Example 4: Custom configuration
 async function customConfig() {
-  console.log('\n📸 示例 4: 自定义配置');
+  console.log('\n📸 Example 4: Custom configuration');
 
   const service = new ScreenshotService({
     headless: true,
@@ -118,9 +118,9 @@ async function customConfig() {
   const result = await service.capture(options);
 
   if (result.success) {
-    console.log('✅ 自定义配置截图成功');
-    console.log('   格式:', result.metadata?.format);
-    console.log('   大小:', Math.round(result.metadata!.size / 1024), 'KB');
+    console.log('✅ Custom config screenshot successful');
+    console.log('   Format:', result.metadata?.format);
+    console.log('   Size:', Math.round(result.metadata!.size / 1024), 'KB');
 
     await Bun.write('google-custom.webp', result.screenshot!);
   }
@@ -128,13 +128,13 @@ async function customConfig() {
   await service.close();
 }
 
-// 示例 5: 错误处理
+// Example 5: Error handling
 async function errorHandling() {
-  console.log('\n📸 示例 5: 错误处理');
+  console.log('\n📸 Example 5: Error handling');
 
   const service = createScreenshotService();
 
-  // 测试无效 URL
+  // Test invalid URL
   const result = await service.capture({
     url: 'not-a-valid-url',
     width: 1920,
@@ -142,25 +142,25 @@ async function errorHandling() {
   });
 
   if (!result.success) {
-    console.log('✅ 正确处理了无效 URL:', result.error);
+    console.log('✅ Invalid URL handled correctly:', result.error);
   }
 
-  // 测试超时
+  // Test timeout
   const timeoutResult = await service.capture({
     url: 'https://httpstat.us/200?sleep=60000',
     timeout: 5000,
   });
 
   if (!timeoutResult.success) {
-    console.log('✅ 正确处理了超时:', timeoutResult.error);
+    console.log('✅ Timeout handled correctly:', timeoutResult.error);
   }
 
   await service.close();
 }
 
-// 主函数
+// Main function
 async function main() {
-  console.log('🚀 Screenshot Service 使用示例\n');
+  console.log('🚀 Screenshot Service Usage Examples\n');
   console.log('='.repeat(50));
 
   try {
@@ -170,14 +170,14 @@ async function main() {
     await customConfig();
     await errorHandling();
 
-    console.log('\n✨ 所有示例运行完成！');
+    console.log('\n✨ All examples completed!');
   } catch (error) {
-    console.error('\n❌ 发生错误:', error);
+    console.error('\n❌ Error occurred:', error);
     process.exit(1);
   }
 }
 
-// 运行示例
+// Run examples
 if (import.meta.main) {
   main();
 }

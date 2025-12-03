@@ -9,7 +9,7 @@ import type {
 import { ScreenshotService } from './screenshot';
 
 /**
- * 增强版截图服务
+ * Enhanced screenshot service
  */
 export class EnhancedScreenshotService extends ScreenshotService {
   private cache: Map<string, { result: ScreenshotResult; timestamp: number }> = new Map();
@@ -175,12 +175,12 @@ export class EnhancedScreenshotService extends ScreenshotService {
     }
 
     if (auth.cookies && auth.cookies.length > 0) {
-      // 从 URL 中提取 domain
+      // Extract domain from URL
       const urlObj = new URL(url);
       const defaultDomain = urlObj.hostname;
 
       const context = page.browserContext();
-      // 确保每个 cookie 都有 domain 值
+      // Ensure each cookie has a domain value
       const cookiesWithDomain = auth.cookies.map((cookie) => ({
         ...cookie,
         domain: cookie.domain || defaultDomain,
@@ -269,7 +269,7 @@ export class EnhancedScreenshotService extends ScreenshotService {
 
     if (options.timezone) {
       await page.evaluateOnNewDocument((tz) => {
-        // @ts-expect-error - 时区设置
+        // @ts-expect-error - Timezone setting
         Intl.DateTimeFormat.prototype.resolvedOptions = function () {
           return { timeZone: tz };
         };
@@ -350,7 +350,7 @@ export class EnhancedScreenshotService extends ScreenshotService {
   }
 }
 
-// 导出工厂函数
+// Export factory function
 export function createEnhancedScreenshotService(config?: BrowserConfig): EnhancedScreenshotService {
   return new EnhancedScreenshotService(config);
 }

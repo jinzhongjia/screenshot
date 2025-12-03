@@ -1,10 +1,10 @@
 /**
  * Screenshot Service Library
  *
- * 可以作为库使用的主导出文件
+ * Main export file for library usage
  */
 
-// 导出核心类和函数
+// Export core classes and functions
 export { ScreenshotService, createScreenshotService } from './core/screenshot';
 export {
   EnhancedScreenshotService,
@@ -12,7 +12,7 @@ export {
 } from './core/screenshot-enhanced';
 export { DEVICE_PRESETS, getDevice } from './core/devices';
 
-// 导出所有类型定义
+// Export all type definitions
 export type {
   ScreenshotOptions,
   ScreenshotResult,
@@ -26,6 +26,6 @@ export type {
   PageActions,
 } from './types';
 
-// 便捷的默认导出
+// Convenient default export
 import { EnhancedScreenshotService } from './core/screenshot-enhanced';
 export default EnhancedScreenshotService;

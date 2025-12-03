@@ -1,18 +1,18 @@
 import type { Browser } from 'puppeteer';
 
 /**
- * 截图服务的类型定义
+ * Type definitions for the screenshot service
  */
 
 /**
- * 设备预设
+ * Device preset
  */
 export interface DevicePreset {
-  /** 设备名称 */
+  /** Device name */
   name: string;
-  /** 用户代理 */
+  /** User agent */
   userAgent: string;
-  /** 视口配置 */
+  /** Viewport configuration */
   viewport: {
     width: number;
     height: number;
@@ -24,17 +24,17 @@ export interface DevicePreset {
 }
 
 /**
- * 认证配置
+ * Authentication configuration
  */
 export interface AuthConfig {
-  /** 基本认证 */
+  /** Basic authentication */
   basic?: {
     username: string;
     password: string;
   };
   /** Bearer Token */
   bearer?: string;
-  /** 自定义请求头 */
+  /** Custom request headers */
   headers?: Record<string, string>;
   /** Cookies */
   cookies?: Array<{
@@ -50,30 +50,30 @@ export interface AuthConfig {
 }
 
 /**
- * 页面操作配置
+ * Page actions configuration
  */
 export interface PageActions {
-  /** 等待元素出现 */
+  /** Wait for element to appear */
   waitForSelector?: string;
-  /** 等待元素消失 */
+  /** Wait for element to disappear */
   waitForSelectorHidden?: string;
-  /** 等待导航 */
+  /** Wait for navigation */
   waitForNavigation?: boolean;
-  /** 自定义等待时间（毫秒） */
+  /** Custom wait time (milliseconds) */
   delay?: number;
-  /** 注入的CSS */
+  /** Injected CSS */
   injectCSS?: string;
-  /** 注入的JavaScript */
+  /** Injected JavaScript */
   injectJS?: string;
-  /** 隐藏元素（CSS选择器） */
+  /** Hide elements (CSS selectors) */
   hideElements?: string[];
-  /** 删除元素（CSS选择器） */
+  /** Remove elements (CSS selectors) */
   removeElements?: string[];
-  /** 点击元素 */
+  /** Click element */
   clickElement?: string;
-  /** 滚动到元素 */
+  /** Scroll to element */
   scrollToElement?: string;
-  /** 填充表单 */
+  /** Fill form */
   fillForm?: Array<{
     selector: string;
     value: string;
@@ -81,26 +81,26 @@ export interface PageActions {
 }
 
 /**
- * 截图选项配置
+ * Screenshot options configuration
  */
 export interface ScreenshotOptions {
-  /** 目标网页 URL */
+  /** Target webpage URL */
   url: string;
-  /** 截图宽度（像素），默认 1920 */
+  /** Screenshot width (pixels), default 1920 */
   width?: number;
-  /** 截图高度（像素），默认 1080 */
+  /** Screenshot height (pixels), default 1080 */
   height?: number;
-  /** 是否全页面截图，默认 false */
+  /** Full page screenshot, default false */
   fullPage?: boolean;
-  /** 截图质量（1-100），仅对 jpeg 和 webp 格式有效 */
+  /** Screenshot quality (1-100), only effective for jpeg and webp formats */
   quality?: number;
-  /** 截图格式 */
+  /** Screenshot format */
   type?: 'webp' | 'jpeg' | 'png';
-  /** 等待策略 */
+  /** Wait strategy */
   waitUntil?: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2';
-  /** 超时时间（毫秒） */
+  /** Timeout (milliseconds) */
   timeout?: number;
-  /** 设备模拟 */
+  /** Device emulation */
   device?:
     | 'iPhone 12'
     | 'iPhone 12 Pro'
@@ -110,131 +110,131 @@ export interface ScreenshotOptions {
     | 'Pixel 5'
     | 'Samsung Galaxy S21'
     | string;
-  /** 自定义设备配置 */
+  /** Custom device configuration */
   customDevice?: DevicePreset;
-  /** 元素选择器（只截取特定元素） */
+  /** Element selector (capture specific element only) */
   selector?: string;
-  /** 裁剪区域 */
+  /** Clip region */
   clip?: {
     x: number;
     y: number;
     width: number;
     height: number;
   };
-  /** 认证配置 */
+  /** Authentication configuration */
   auth?: AuthConfig;
-  /** 页面操作 */
+  /** Page actions */
   actions?: PageActions;
-  /** 是否启用JavaScript，默认 true */
+  /** Enable JavaScript, default true */
   javascript?: boolean;
-  /** 是否忽略HTTPS错误 */
+  /** Ignore HTTPS errors */
   ignoreHTTPSErrors?: boolean;
-  /** 暗黑模式 */
+  /** Dark mode */
   darkMode?: boolean;
-  /** 区域设置 */
+  /** Locale setting */
   locale?: string;
-  /** 时区 */
+  /** Timezone */
   timezone?: string;
-  /** 地理位置 */
+  /** Geolocation */
   geolocation?: {
     latitude: number;
     longitude: number;
     accuracy?: number;
   };
-  /** 离线模式 */
+  /** Offline mode */
   offline?: boolean;
-  /** 缓存键（用于缓存） */
+  /** Cache key (for caching) */
   cacheKey?: string;
-  /** 缓存TTL（秒） */
+  /** Cache TTL (seconds) */
   cacheTTL?: number;
-  /** 请求级浏览器配置，会与服务默认配置合并 */
+  /** Request-level browser config, merged with service default config */
   browser?: BrowserConfig;
 }
 
 /**
- * 截图结果
+ * Screenshot result
  */
 export interface ScreenshotResult {
-  /** 是否成功 */
+  /** Success status */
   success: boolean;
-  /** 页面标题 */
+  /** Page title */
   title?: string;
-  /** 页面描述 */
+  /** Page description */
   description?: string;
-  /** 截图二进制数据 */
+  /** Screenshot binary data */
   screenshot?: Buffer;
-  /** 错误信息 */
+  /** Error message */
   error?: string;
-  /** 元数据 */
+  /** Metadata */
   metadata?: {
-    /** 实际截图宽度 */
+    /** Actual screenshot width */
     width: number;
-    /** 实际截图高度 */
+    /** Actual screenshot height */
     height: number;
-    /** 文件大小（字节） */
+    /** File size (bytes) */
     size: number;
-    /** 截图格式 */
+    /** Screenshot format */
     format: string;
   };
 }
 
 /**
- * API JSON 响应格式
+ * API JSON response format
  */
 export interface ApiJsonResponse {
-  /** 是否成功 */
+  /** Success status */
   success: boolean;
-  /** 页面标题 */
+  /** Page title */
   title?: string;
-  /** 页面描述 */
+  /** Page description */
   description?: string;
-  /** Base64 编码的截图数据 */
+  /** Base64 encoded screenshot data */
   screenshot?: string;
-  /** 错误信息 */
+  /** Error message */
   error?: string;
-  /** 元数据 */
+  /** Metadata */
   metadata?: {
-    /** 实际截图宽度 */
+    /** Actual screenshot width */
     width: number;
-    /** 实际截图高度 */
+    /** Actual screenshot height */
     height: number;
-    /** 文件大小（字节） */
+    /** File size (bytes) */
     size: number;
-    /** 截图格式 */
+    /** Screenshot format */
     format: string;
   };
 }
 
 /**
- * 浏览器配置选项
+ * Browser configuration options
  */
 export interface BrowserConfig {
-  /** 是否无头模式 */
+  /** Headless mode */
   headless?: boolean;
-  /** 启动参数 */
+  /** Launch arguments */
   args?: string[];
-  /** 执行路径 */
+  /** Executable path */
   executablePath?: string;
-  /** 默认超时时间 */
+  /** Default timeout */
   defaultTimeout?: number;
-  /** 获取浏览器的等待超时时间（毫秒） */
+  /** Browser acquire timeout (milliseconds) */
   acquireTimeout?: number;
-  /** 自定义池标识，可用于与其他配置共享资源 */
+  /** Custom pool key, can be used to share resources with other configs */
   poolKey?: string;
-  /** 单浏览器允许的最大并发页面数 */
+  /** Maximum concurrent pages per browser */
   maxPagesPerBrowser?: number;
-  /** 单配置池允许的最大浏览器实例数 */
+  /** Maximum browser instances per config pool */
   maxBrowsersPerConfig?: number;
-  /** 空闲浏览器保活时长（毫秒） */
+  /** Idle browser keep-alive duration (milliseconds) */
   keepAliveMillis?: number;
 }
 
 export interface BrowserPoolConfig {
-  /** 所有池合计的最大浏览器数量 */
+  /** Maximum total browsers across all pools */
   maxTotalBrowsers?: number;
-  /** 默认获取浏览器超时时间（毫秒） */
+  /** Default browser acquire timeout (milliseconds) */
   acquireTimeout?: number;
-  /** 浏览器空闲关闭时间（毫秒） */
+  /** Browser idle close time (milliseconds) */
   keepAliveMillis?: number;
 }
 

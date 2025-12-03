@@ -1,14 +1,14 @@
 /**
- * API 客户端使用示例
+ * API client usage examples
  */
 
 import type { ApiJsonResponse } from '../src';
 
-// API 配置
+// API configuration
 const API_BASE_URL = process.env.API_URL || 'http://localhost:3000';
 
 /**
- * Screenshot API 客户端类
+ * Screenshot API client class
  */
 class ScreenshotApiClient {
   private baseUrl: string;
@@ -22,7 +22,7 @@ class ScreenshotApiClient {
   }
 
   /**
-   * 截取网页截图（返回 JSON）
+   * Capture webpage screenshot (returns JSON)
    */
   async captureAsJson(
     url: string,
@@ -51,7 +51,7 @@ class ScreenshotApiClient {
   }
 
   /**
-   * 截取网页截图（返回图片二进制）
+   * Capture webpage screenshot (returns image binary)
    */
   async captureAsImage(
     url: string,
@@ -81,7 +81,7 @@ class ScreenshotApiClient {
   }
 
   /**
-   * 健康检查
+   * Health check
    */
   async healthCheck(): Promise<boolean> {
     try {
@@ -94,10 +94,10 @@ class ScreenshotApiClient {
   }
 }
 
-// 使用示例
+// Usage examples
 
 async function jsonExample() {
-  console.log('📸 JSON 格式响应示例');
+  console.log('📸 JSON format response example');
 
   const client = new ScreenshotApiClient();
 
@@ -108,27 +108,27 @@ async function jsonExample() {
     });
 
     if (result.success) {
-      console.log('✅ 截图成功');
-      console.log('   标题:', result.title);
-      console.log('   描述:', result.description);
+      console.log('✅ Screenshot successful');
+      console.log('   Title:', result.title);
+      console.log('   Description:', result.description);
 
       if (result.metadata) {
-        console.log('   尺寸:', `${result.metadata.width}x${result.metadata.height}`);
-        console.log('   大小:', Math.round(result.metadata.size / 1024), 'KB');
+        console.log('   Dimensions:', `${result.metadata.width}x${result.metadata.height}`);
+        console.log('   Size:', Math.round(result.metadata.size / 1024), 'KB');
       }
 
-      // 保存截图
+      // Save screenshot
       const buffer = Buffer.from(result.screenshot!, 'base64');
       await Bun.write('api-json-example.webp', buffer);
-      console.log('   已保存: api-json-example.webp');
+      console.log('   Saved: api-json-example.webp');
     }
   } catch (error) {
-    console.error('❌ 错误:', error);
+    console.error('❌ Error:', error);
   }
 }
 
 async function imageExample() {
-  console.log('\n📸 图片格式响应示例');
+  console.log('\n📸 Image format response example');
 
   const client = new ScreenshotApiClient();
 
@@ -139,23 +139,23 @@ async function imageExample() {
       fullPage: false,
     });
 
-    console.log('✅ 获取图片成功');
-    console.log('   大小:', Math.round(imageBuffer.length / 1024), 'KB');
+    console.log('✅ Image retrieved successfully');
+    console.log('   Size:', Math.round(imageBuffer.length / 1024), 'KB');
 
     await Bun.write('api-image-example.webp', imageBuffer);
-    console.log('   已保存: api-image-example.webp');
+    console.log('   Saved: api-image-example.webp');
   } catch (error) {
-    console.error('❌ 错误:', error);
+    console.error('❌ Error:', error);
   }
 }
 
 async function batchApiCapture() {
-  console.log('\n📸 批量 API 调用示例');
+  console.log('\n📸 Batch API call example');
 
   const client = new ScreenshotApiClient();
   const urls = ['https://example.com', 'https://bun.sh', 'https://www.typescriptlang.org'];
 
-  // 并行请求
+  // Parallel requests
   const promises = urls.map(async (url) => {
     try {
       const result = await client.captureAsJson(url, {
@@ -188,12 +188,12 @@ async function batchApiCapture() {
 
   const results = await Promise.all(promises);
 
-  console.log('\n📊 批量结果:');
+  console.log('\n📊 Batch results:');
   results.forEach((result) => {
     if (result.success) {
       console.log(`   ✅ ${result.url}`);
-      console.log(`      标题: ${result.title}`);
-      console.log(`      文件: ${result.filename}`);
+      console.log(`      Title: ${result.title}`);
+      console.log(`      File: ${result.filename}`);
     } else {
       console.log(`   ❌ ${result.url}: ${result.error}`);
     }
@@ -201,19 +201,19 @@ async function batchApiCapture() {
 }
 
 async function healthCheckExample() {
-  console.log('\n🏥 健康检查示例');
+  console.log('\n🏥 Health check example');
 
   const client = new ScreenshotApiClient();
   const isHealthy = await client.healthCheck();
 
   if (isHealthy) {
-    console.log('✅ 服务健康');
+    console.log('✅ Service is healthy');
   } else {
-    console.log('❌ 服务不可用');
+    console.log('❌ Service is unavailable');
   }
 }
 
-// 创建一个高级客户端，带重试机制
+// Create an advanced client with retry mechanism
 class AdvancedScreenshotClient extends ScreenshotApiClient {
   private maxRetries: number;
   private retryDelay: number;
@@ -233,7 +233,7 @@ class AdvancedScreenshotClient extends ScreenshotApiClient {
       return await this.captureAsJson(url, options);
     } catch (error) {
       if (retries < this.maxRetries) {
-        console.log(`   重试 ${retries + 1}/${this.maxRetries}...`);
+        console.log(`   Retry ${retries + 1}/${this.maxRetries}...`);
         await new Promise((resolve) => setTimeout(resolve, this.retryDelay));
         return this.captureWithRetry(url, options, retries + 1);
       }
@@ -243,7 +243,7 @@ class AdvancedScreenshotClient extends ScreenshotApiClient {
 }
 
 async function advancedClientExample() {
-  console.log('\n🚀 高级客户端示例（带重试）');
+  console.log('\n🚀 Advanced client example (with retry)');
 
   const client = new AdvancedScreenshotClient(API_BASE_URL, 3, 2000);
 
@@ -254,30 +254,30 @@ async function advancedClientExample() {
     });
 
     if (result.success) {
-      console.log('✅ 截图成功（可能经过重试）');
-      console.log('   标题:', result.title);
+      console.log('✅ Screenshot successful (possibly after retries)');
+      console.log('   Title:', result.title);
     }
   } catch (error) {
-    console.error('❌ 最终失败（已重试）:', error);
+    console.error('❌ Final failure (after retries):', error);
   }
 }
 
-// 主函数
+// Main function
 async function main() {
-  console.log('🚀 Screenshot API 客户端示例\n');
+  console.log('🚀 Screenshot API Client Examples\n');
   console.log('='.repeat(50));
 
-  // 首先检查服务是否可用
+  // First check if service is available
   const client = new ScreenshotApiClient();
   const isHealthy = await client.healthCheck();
 
   if (!isHealthy) {
-    console.log('⚠️  API 服务不可用，请先启动服务：');
+    console.log('⚠️  API service is unavailable, please start the service first:');
     console.log('   bun run dev');
     process.exit(1);
   }
 
-  console.log('✅ API 服务已就绪\n');
+  console.log('✅ API service is ready\n');
 
   try {
     await jsonExample();
@@ -286,14 +286,14 @@ async function main() {
     await healthCheckExample();
     await advancedClientExample();
 
-    console.log('\n✨ 所有示例运行完成！');
+    console.log('\n✨ All examples completed!');
   } catch (error) {
-    console.error('\n❌ 发生错误:', error);
+    console.error('\n❌ Error occurred:', error);
     process.exit(1);
   }
 }
 
-// 运行示例
+// Run examples
 if (import.meta.main) {
   main();
 }

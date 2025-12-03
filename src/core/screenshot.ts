@@ -11,7 +11,7 @@ import { getDevice } from './devices';
 import { BrowserPoolManager } from './browser-pool';
 
 /**
- * 截图服务核心类
+ * Screenshot service core class
  */
 export class ScreenshotService {
   protected config: BrowserConfig;
@@ -34,10 +34,10 @@ export class ScreenshotService {
   }
 
   /**
-   * 截取网页截图
+   * Capture webpage screenshot
    */
   async capture(options: ScreenshotOptions): Promise<ScreenshotResult> {
-    // 最多重试一次，以处理浏览器连接问题
+    // Retry once at most to handle browser connection issues
     let retries = 1;
     let lastError: unknown;
 
@@ -46,7 +46,7 @@ export class ScreenshotService {
         return await this.captureInternal(options);
       } catch (error) {
         lastError = error;
-        // 如果是连接错误且还有重试次数，重置浏览器并重试
+        // If connection error and retries remaining, reset browser and retry
         if (
           retries > 0 &&
           error instanceof Error &&
@@ -65,10 +65,10 @@ export class ScreenshotService {
   }
 
   /**
-   * 内部截图实现
+   * Internal screenshot implementation
    */
   private async captureInternal(options: ScreenshotOptions): Promise<ScreenshotResult> {
-    // 当前，该钩子没用，但保留以备将来扩展
+    // Currently this hook is unused, but kept for future extensions
     const cachedResult = await this.getCachedResult(options);
     if (cachedResult) {
       return cachedResult;
@@ -113,14 +113,14 @@ export class ScreenshotService {
   }
 
   /**
-   * 关闭浏览器实例
+   * Close browser instance
    */
   async close(): Promise<void> {
     await this.poolManager.drain();
   }
 
   /**
-   * 检查服务是否就绪
+   * Check if service is ready
    */
   async isReady(): Promise<boolean> {
     try {
@@ -132,24 +132,24 @@ export class ScreenshotService {
   }
 
   /**
-   * 钩子：检查缓存
+   * Hook: Check cache
    */
   protected async getCachedResult(_options: ScreenshotOptions): Promise<ScreenshotResult | null> {
     return null;
   }
 
   /**
-   * 钩子：创建浏览器页面
+   * Hook: Create browser page
    */
   protected async createPage(browser: Browser, _options: ScreenshotOptions): Promise<Page> {
     try {
-      // 检查浏览器是否仍然连接
+      // Check if browser is still connected
       if (!browser.connected) {
         throw new Error('Browser is not connected');
       }
       return await browser.newPage();
     } catch (error) {
-      // 如果创建页面失败，尝试重置浏览器
+      // If page creation fails, try to reset browser
       console.error('Failed to create page, resetting browser:', error);
       await this.invalidateCurrentBrowser(error);
       throw error;
@@ -157,7 +157,7 @@ export class ScreenshotService {
   }
 
   /**
-   * 验证输入参数
+   * Validate input parameters
    */
   protected validateOptions(options: ScreenshotOptions): void {
     if (!options.url) {
@@ -175,7 +175,7 @@ export class ScreenshotService {
   }
 
   /**
-   * 获取或创建浏览器实例
+   * Get or create browser instance
    */
   protected async getBrowser(options?: ScreenshotOptions): Promise<Browser> {
     if (this.currentAcquire) {
@@ -237,7 +237,7 @@ export class ScreenshotService {
   }
 
   /**
-   * 设置页面环境（可被子类扩展）
+   * Configure page environment (can be extended by subclasses)
    */
   protected async configurePage(page: Page, options: ScreenshotOptions): Promise<void> {
     const { width = 1920, height = 1080, device, customDevice } = options;
@@ -256,21 +256,21 @@ export class ScreenshotService {
   }
 
   /**
-   * 导航前钩子
+   * Pre-navigation hook
    */
   protected async beforeNavigate(_page: Page, _options: ScreenshotOptions): Promise<void> {
     return;
   }
 
   /**
-   * 导航后钩子
+   * Post-navigation hook
    */
   protected async afterNavigate(_page: Page, _options: ScreenshotOptions): Promise<void> {
     return;
   }
 
   /**
-   * 执行截图
+   * Execute screenshot
    */
   protected async captureScreenshot(page: Page, options: ScreenshotOptions): Promise<Buffer> {
     const { type = 'webp', quality = 90, fullPage = false } = options;
@@ -280,7 +280,7 @@ export class ScreenshotService {
       fullPage,
     };
 
-    // PNG 不支持 quality 参数，仅 JPEG 和 WebP 支持
+    // PNG does not support quality parameter, only JPEG and WebP do
     if ((type === 'jpeg' || type === 'webp') && typeof quality === 'number') {
       screenshotOptions.quality = quality;
     }
@@ -294,7 +294,7 @@ export class ScreenshotService {
   }
 
   /**
-   * 构建截图元数据
+   * Build screenshot metadata
    */
   protected async buildScreenshotMetadata(
     page: Page,
@@ -338,7 +338,7 @@ export class ScreenshotService {
   }
 
   /**
-   * 缓存结果钩子
+   * Cache result hook
    */
   protected async storeResultInCache(
     _options: ScreenshotOptions,
@@ -348,7 +348,7 @@ export class ScreenshotService {
   }
 
   /**
-   * 生成成功结果
+   * Create success result
    */
   protected createSuccessResult(
     pageMeta: { title: string; description: string },
@@ -365,7 +365,7 @@ export class ScreenshotService {
   }
 
   /**
-   * 生成失败结果
+   * Create error result
    */
   protected createErrorResult(error: unknown): ScreenshotResult {
     return {
@@ -375,21 +375,21 @@ export class ScreenshotService {
   }
 
   /**
-   * 获取导航等待条件
+   * Get navigation wait condition
    */
   protected getWaitUntil(options: ScreenshotOptions): NonNullable<ScreenshotOptions['waitUntil']> {
     return options.waitUntil ?? 'networkidle2';
   }
 
   /**
-   * 获取超时时间
+   * Get timeout
    */
   protected getTimeout(options: ScreenshotOptions): number {
     return options.timeout ?? this.config.defaultTimeout ?? 30000;
   }
 
   /**
-   * 提取页面元数据
+   * Extract page metadata
    */
   protected async extractMetadata(page: Page): Promise<{ title: string; description: string }> {
     const title = await page.title();
@@ -406,7 +406,7 @@ export class ScreenshotService {
   }
 
   /**
-   * 页面清理
+   * Page cleanup
    */
   protected async cleanupPage(page: Page): Promise<void> {
     try {
@@ -414,7 +414,7 @@ export class ScreenshotService {
         await page.close();
       }
     } catch (error) {
-      // 忽略连接已关闭的错误
+      // Ignore connection closed errors
       if (error instanceof Error && !error.message.includes('Connection closed')) {
         console.error('Error closing page:', error);
       }
@@ -422,7 +422,7 @@ export class ScreenshotService {
   }
 }
 
-// 导出默认实例工厂函数
+// Export default instance factory function
 export function createScreenshotService(config?: BrowserConfig): ScreenshotService {
   return new ScreenshotService(config);
 }

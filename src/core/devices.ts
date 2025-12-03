@@ -1,10 +1,10 @@
 import type { DevicePreset } from '../types';
 
 /**
- * 预定义的设备列表
+ * Predefined device list
  */
 export const DEVICE_PRESETS: Record<string, DevicePreset> = {
-  // iPhone 系列
+  // iPhone series
   'iPhone 12': {
     name: 'iPhone 12',
     userAgent:
@@ -318,7 +318,7 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
     },
   },
 
-  // iPad 系列
+  // iPad series
   iPad: {
     name: 'iPad',
     userAgent:
@@ -359,7 +359,7 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
     },
   },
 
-  // Android 设备
+  // Android devices
   'Pixel 5': {
     name: 'Pixel 5',
     userAgent:
@@ -595,7 +595,7 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
     },
   },
 
-  // 桌面设备
+  // Desktop devices
   'Desktop 1080p': {
     name: 'Desktop 1080p',
     userAgent:
@@ -690,15 +690,15 @@ export const DEVICE_PRESETS: Record<string, DevicePreset> = {
 };
 
 /**
- * 获取设备配置
+ * Get device configuration
  */
 export function getDevice(deviceName: string): DevicePreset | undefined {
-  // 检查预设
+  // Check presets
   if (DEVICE_PRESETS[deviceName]) {
     return DEVICE_PRESETS[deviceName];
   }
 
-  // 如果没有找到，返回 undefined
+  // If not found, return undefined
   console.warn(`Device preset "${deviceName}" not found`);
   return undefined;
 }
