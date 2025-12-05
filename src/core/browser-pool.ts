@@ -21,6 +21,46 @@ type PoolState = {
   idleTimers: Map<Browser, NodeJS.Timeout>;
 };
 
+/**
+ * Simple async mutex lock for protecting critical sections
+ */
+class AsyncMutex {
+  private locked = false;
+  private waiting: Array<() => void> = [];
+
+  async acquire(): Promise<void> {
+    if (!this.locked) {
+      this.locked = true;
+      return;
+    }
+
+    return new Promise<void>((resolve) => {
+      this.waiting.push(resolve);
+    });
+  }
+
+  release(): void {
+    const next = this.waiting.shift();
+    if (next) {
+      next();
+    } else {
+      this.locked = false;
+    }
+  }
+
+  /**
+   * Execute a function while holding the lock
+   */
+  async withLock<T>(fn: () => T | Promise<T>): Promise<T> {
+    await this.acquire();
+    try {
+      return await fn();
+    } finally {
+      this.release();
+    }
+  }
+}
+
 const DEFAULT_GLOBAL_CONFIG: Required<BrowserPoolConfig> = {
   maxTotalBrowsers: 4,
   acquireTimeout: 30_000,
@@ -48,6 +88,7 @@ export class BrowserPoolManager {
   private totalBrowsers = 0;
   private closed = false;
   private globalConfig: BrowserPoolConfig;
+  private readonly mutex = new AsyncMutex();
 
   constructor(config: BrowserPoolConfig = {}) {
     this.globalConfig = { ...config };
@@ -68,80 +109,86 @@ export class BrowserPoolManager {
   }
 
   async acquire(options: BrowserPoolAcquireOptions): Promise<BrowserPoolAcquireResult> {
-    if (this.closed) {
-      throw new Error('BrowserPoolManager has been shut down');
-    }
+    return await this.mutex.withLock(async () => {
+      if (this.closed) {
+        throw new Error('BrowserPoolManager has been shut down');
+      }
 
-    const normalizedConfig = this.normalizeConfig(options.config);
-    const poolKey = this.getPoolKey(normalizedConfig);
-    const pool = this.ensurePool(poolKey, normalizedConfig);
+      const normalizedConfig = this.normalizeConfig(options.config);
+      const poolKey = this.getPoolKey(normalizedConfig);
+      const pool = this.ensurePool(poolKey, normalizedConfig);
 
-    const availableBrowser = this.takeAvailableBrowser(pool);
-    if (availableBrowser) {
-      return { browser: availableBrowser, poolKey };
-    }
+      const availableBrowser = this.takeAvailableBrowser(pool);
+      if (availableBrowser) {
+        return { browser: availableBrowser, poolKey };
+      }
 
-    const maybeBrowser = await this.maybeCreateBrowser(poolKey, pool);
-    if (maybeBrowser) {
-      return { browser: maybeBrowser, poolKey };
-    }
+      const maybeBrowser = await this.maybeCreateBrowser(poolKey, pool);
+      if (maybeBrowser) {
+        return { browser: maybeBrowser, poolKey };
+      }
 
-    return await this.enqueuePendingRequest(poolKey, pool, options);
+      return await this.enqueuePendingRequest(poolKey, pool, options);
+    });
   }
 
   async release(poolKey: string, browser: Browser): Promise<void> {
-    const pool = this.pools.get(poolKey);
-    if (!pool || !pool.browsers.has(browser)) {
-      return;
-    }
+    await this.mutex.withLock(async () => {
+      const pool = this.pools.get(poolKey);
+      if (!pool || !pool.browsers.has(browser)) {
+        return;
+      }
 
-    const usage = pool.usage.get(browser) ?? 0;
-    if (usage <= 0) {
-      return;
-    }
+      const usage = pool.usage.get(browser) ?? 0;
+      if (usage <= 0) {
+        return;
+      }
 
-    const nextUsage = usage - 1;
-    pool.usage.set(browser, nextUsage);
+      const nextUsage = usage - 1;
+      pool.usage.set(browser, nextUsage);
 
-    if (nextUsage < this.getBrowserUsageLimit(pool.config)) {
-      pool.available.add(browser);
-    }
+      if (nextUsage < this.getBrowserUsageLimit(pool.config)) {
+        pool.available.add(browser);
+      }
 
-    await this.processPending(poolKey, pool);
+      await this.processPending(poolKey, pool);
 
-    const usageAfter = pool.usage.get(browser) ?? 0;
-    if (usageAfter === 0 && pool.pending.length === 0) {
-      this.scheduleIdleClose(poolKey, pool, browser);
-    }
+      const usageAfter = pool.usage.get(browser) ?? 0;
+      if (usageAfter === 0 && pool.pending.length === 0) {
+        this.scheduleIdleClose(poolKey, pool, browser);
+      }
+    });
   }
 
   async invalidate(poolKey: string, browser: Browser, reason?: unknown): Promise<void> {
-    const pool = this.pools.get(poolKey);
-    if (!pool || !pool.browsers.has(browser)) {
-      return;
-    }
+    await this.mutex.withLock(async () => {
+      const pool = this.pools.get(poolKey);
+      if (!pool || !pool.browsers.has(browser)) {
+        return;
+      }
 
-    this.clearIdleTimer(pool, browser);
-    pool.available.delete(browser);
-    pool.usage.delete(browser);
-    pool.browsers.delete(browser);
-    this.totalBrowsers = Math.max(0, this.totalBrowsers - 1);
+      this.clearIdleTimer(pool, browser);
+      pool.available.delete(browser);
+      pool.usage.delete(browser);
+      pool.browsers.delete(browser);
+      this.totalBrowsers = Math.max(0, this.totalBrowsers - 1);
 
-    try {
-      await browser.close();
-    } catch (error) {
-      console.error('Failed to close browser during invalidate:', error);
-    }
+      try {
+        await browser.close();
+      } catch (error) {
+        console.error('Failed to close browser during invalidate:', error);
+      }
 
-    if (reason instanceof Error) {
-      console.warn('Browser instance invalidated:', reason.message);
-    }
+      if (reason instanceof Error) {
+        console.warn('Browser instance invalidated:', reason.message);
+      }
 
-    await this.processPending(poolKey, pool);
+      await this.processPending(poolKey, pool);
 
-    if (pool.browsers.size === 0 && pool.pending.length === 0) {
-      this.pools.delete(poolKey);
-    }
+      if (pool.browsers.size === 0 && pool.pending.length === 0) {
+        this.pools.delete(poolKey);
+      }
+    });
   }
 
   async drain(): Promise<void> {
@@ -153,47 +200,49 @@ export class BrowserPoolManager {
   }
 
   private async performShutdown(permanent: boolean): Promise<void> {
-    this.closed = true;
+    await this.mutex.withLock(async () => {
+      this.closed = true;
 
-    const closeTasks: Array<Promise<void>> = [];
+      const closeTasks: Array<Promise<void>> = [];
 
-    for (const pool of this.pools.values()) {
-      for (const pending of pool.pending.splice(0)) {
-        if (pending.timeout) {
-          clearTimeout(pending.timeout);
+      for (const pool of this.pools.values()) {
+        for (const pending of pool.pending.splice(0)) {
+          if (pending.timeout) {
+            clearTimeout(pending.timeout);
+          }
+          pending.reject(new Error('Browser pool shutting down'));
         }
-        pending.reject(new Error('Browser pool shutting down'));
+
+        for (const browser of pool.browsers) {
+          this.clearIdleTimer(pool, browser);
+          closeTasks.push(
+            browser
+              .close()
+              .catch((error) => console.error('Failed to close browser during shutdown:', error))
+          );
+        }
+
+        pool.browsers.clear();
+        pool.available.clear();
+        pool.usage.clear();
+        pool.idleTimers.clear();
       }
 
-      for (const browser of pool.browsers) {
-        this.clearIdleTimer(pool, browser);
-        closeTasks.push(
-          browser
-            .close()
-            .catch((error) => console.error('Failed to close browser during shutdown:', error))
-        );
+      this.pools.clear();
+      this.totalBrowsers = 0;
+
+      await Promise.all(closeTasks);
+
+      this.closed = permanent;
+
+      if (permanent) {
+        if (BrowserPoolManager.instance === this) {
+          BrowserPoolManager.instance = null;
+        }
+      } else {
+        this.closed = false;
       }
-
-      pool.browsers.clear();
-      pool.available.clear();
-      pool.usage.clear();
-      pool.idleTimers.clear();
-    }
-
-    this.pools.clear();
-    this.totalBrowsers = 0;
-
-    await Promise.all(closeTasks);
-
-    this.closed = permanent;
-
-    if (permanent) {
-      if (BrowserPoolManager.instance === this) {
-        BrowserPoolManager.instance = null;
-      }
-    } else {
-      this.closed = false;
-    }
+    });
   }
 
   private ensurePool(poolKey: string, config: BrowserConfig): PoolState {
